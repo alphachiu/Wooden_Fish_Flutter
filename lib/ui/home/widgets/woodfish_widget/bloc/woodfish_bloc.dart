@@ -20,7 +20,10 @@ class Woodfish_widgetBloc
 
   void _increment(IncrementEvent event, Emitter<Woodfish_widgetState> emit) {
     state.totalCount++;
-    KnockTextWidget knockWidget = KnockTextWidget(onRemove: (widget) async {
+    KnockTextWidget knockWidget = KnockTextWidget(childWidget:const Text(
+      "＋ 1",
+      style: TextStyle(fontSize: 24.0),
+    ),onRemove: (widget) async {
       await _removeWidget(widget);
     });
 

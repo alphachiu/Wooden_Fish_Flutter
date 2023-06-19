@@ -136,7 +136,7 @@ class Woodfish_widgetPage extends StatelessWidget {
 
     return SafeArea(
       child:
-          Scaffold(body: BlocBuilder<Woodfish_widgetBloc, Woodfish_widgetState>(
+          Scaffold(backgroundColor: Colors.redAccent,body: BlocBuilder<Woodfish_widgetBloc, Woodfish_widgetState>(
         builder: (context, state) {
           return Stack(
             children: [
@@ -172,10 +172,7 @@ class Woodfish_widgetPage extends StatelessWidget {
                               InkWell(
                                 highlightColor: Colors.transparent,
                                 splashColor: Colors.transparent,
-                                child: Icon(
-                                  Icons.heart_broken,
-                                  size: 150.0,
-                                ),
+                                child: const Image(image: AssetImage('assets/images/wooden-fish.png'),width: 250,height: 250,),
                                 onTap: () {
                                   bloc.add(IncrementEvent());
                                 },

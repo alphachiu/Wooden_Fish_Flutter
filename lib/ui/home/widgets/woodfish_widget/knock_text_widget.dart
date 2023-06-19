@@ -4,8 +4,9 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 
 class KnockTextWidget extends StatefulWidget {
-  KnockTextWidget({Key? key, this.onRemove}) : super(key: key);
+  KnockTextWidget({Key? key, this.onRemove, this.childWidget}) : super(key: key);
 
+  Widget? childWidget ;
   Function(KnockTextWidget knock)? onRemove;
 
   @override
@@ -21,6 +22,8 @@ class _KnockTextWidgetState extends State<KnockTextWidget>
   @override
   void initState() {
     super.initState();
+
+
     _animationController = AnimationController(
       vsync: this,
       duration: Duration(seconds: 1),
@@ -35,7 +38,7 @@ class _KnockTextWidgetState extends State<KnockTextWidget>
     var x = rng.nextInt(20).toDouble();
     var y = rng.nextInt(20).toDouble();
     _slideAnimation =
-        Tween<Offset>(begin: const Offset(1, 1), end: Offset(x - 5, -y))
+        Tween<Offset>(begin: const Offset(2, 2), end: Offset(x - 5, -y))
             .animate(_animation);
 
     _animationController.forward();
@@ -73,10 +76,7 @@ class _KnockTextWidgetState extends State<KnockTextWidget>
           opacity: _opacityAnimation.value,
           child: SlideTransition(
             position: _slideAnimation,
-            child: Text(
-              "＋ 1",
-              style: TextStyle(fontSize: 24.0),
-            ),
+            child: widget.childWidget ,
           ),
         );
       },
