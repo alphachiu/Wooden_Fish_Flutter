@@ -7,39 +7,35 @@ import 'woodfish_state.dart';
 
 class Woodfish_widgetBloc
     extends Bloc<Woodfish_widgetEvent, Woodfish_widgetState> {
-  List<Widget> textAnimationWidgets = [];
+  List<Widget> _knockAnimationWidgets = [];
 
   Woodfish_widgetBloc() : super(Woodfish_widgetState().init()) {
     on<InitEvent>(_init);
-    on<TotalIncrementEvent>(_increment);
-    on<TotalIncrementWidgetEvent>(_incrementWidget);
+    on<IncrementEvent>(_increment);
   }
 
   void _init(InitEvent event, Emitter<Woodfish_widgetState> emit) async {
     emit(state.clone());
   }
 
-  void _incrementWidget(
-      TotalIncrementWidgetEvent event, Emitter<Woodfish_widgetState> emit) {
+  void _increment(IncrementEvent event, Emitter<Woodfish_widgetState> emit) {
+    state.totalCount++;
     KnockTextWidget knockWidget = KnockTextWidget(onRemove: (widget) async {
       await _removeWidget(widget);
-      state.textAnimationWidgets = textAnimationWidgets;
     });
-    textAnimationWidgets.add(knockWidget);
-    state.textAnimationWidgets = textAnimationWidgets;
-  }
 
-  void _increment(
-      TotalIncrementEvent event, Emitter<Woodfish_widgetState> emit) {
-    state.totalCount++;
-
+    _knockAnimationWidgets.add(Stack(
+      children: [knockWidget],
+    ));
+    state.knockAnimationWidgets = _knockAnimationWidgets;
     emit(state.clone());
   }
 
   Future<void> _removeWidget(KnockTextWidget widget) async {
     if (widget.onRemove != null) {
       print('_removeWidget');
-      textAnimationWidgets.remove(widget);
+      _knockAnimationWidgets.remove(widget);
+      state.knockAnimationWidgets = _knockAnimationWidgets;
     }
   }
 }

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 
@@ -30,8 +31,11 @@ class _KnockTextWidgetState extends State<KnockTextWidget>
 
     _opacityAnimation =
         Tween<double>(begin: 1.0, end: 0.0).animate(_animationController);
+    var rng = Random();
+    var x = rng.nextInt(20).toDouble();
+    var y = rng.nextInt(20).toDouble();
     _slideAnimation =
-        Tween<Offset>(begin: const Offset(0, 10), end: const Offset(0, 1))
+        Tween<Offset>(begin: const Offset(1, 1), end: Offset(x - 5, -y))
             .animate(_animation);
 
     _animationController.forward();
