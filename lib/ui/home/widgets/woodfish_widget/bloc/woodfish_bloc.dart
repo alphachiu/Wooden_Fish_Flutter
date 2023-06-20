@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:woodenfish_bloc/ui/home/widgets/woodfish_widget/knock_text_widget.dart';
@@ -8,10 +10,12 @@ import 'woodfish_state.dart';
 class Woodfish_widgetBloc
     extends Bloc<Woodfish_widgetEvent, Woodfish_widgetState> {
   List<Widget> _knockAnimationWidgets = [];
+  late Timer autoKnockTimer;
 
   Woodfish_widgetBloc() : super(Woodfish_widgetState().init()) {
     on<InitEvent>(_init);
     on<IncrementEvent>(_increment);
+    on<IsAutoEvent>(_isAutoEvent);
   }
 
   void _init(InitEvent event, Emitter<Woodfish_widgetState> emit) async {
@@ -20,17 +24,24 @@ class Woodfish_widgetBloc
 
   void _increment(IncrementEvent event, Emitter<Woodfish_widgetState> emit) {
     state.totalCount++;
-    KnockTextWidget knockWidget = KnockTextWidget(childWidget:const Text(
-      "＋ 1",
-      style: TextStyle(fontSize: 24.0),
-    ),onRemove: (widget) async {
-      await _removeWidget(widget);
-    });
+    KnockTextWidget knockWidget = KnockTextWidget(
+        childWidget: const Text(
+          "＋ 1",
+          style: TextStyle(fontSize: 24.0),
+        ),
+        onRemove: (widget) async {
+          await _removeWidget(widget);
+        });
 
     _knockAnimationWidgets.add(Stack(
       children: [knockWidget],
     ));
     state.knockAnimationWidgets = _knockAnimationWidgets;
+    emit(state.clone());
+  }
+
+  void _isAutoEvent(IsAutoEvent event, Emitter<Woodfish_widgetState> emit) {
+    state.isAuto = event.isAuto;
     emit(state.clone());
   }
 
