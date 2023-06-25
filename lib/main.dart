@@ -1,16 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:woodenfish_bloc/repository/api/local_storage_setting_api.dart';
+import 'package:woodenfish_bloc/repository/wooden_repository.dart';
 import 'package:woodenfish_bloc/ui/home/page/bottom_tabbar.dart';
+import 'package:woodenfish_bloc/ui/home/widgets/setting_widget/bloc/setting_bloc.dart';
+import 'package:woodenfish_bloc/ui/home/widgets/woodfish_widget/bloc/woodfish_bloc.dart';
 
-void main() {
-  runApp(const MyApp());
+Future<void> main() async{
+  WidgetsFlutterBinding.ensureInitialized();
+  final settingApi = LocalStorageSettingApi(plugin: await SharedPreferences.getInstance());
+  runApp( MyApp(localSettingAPI:settingApi));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  const MyApp({required this.localSettingAPI,super.key});
+  final LocalStorageSettingApi localSettingAPI;
 
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+
+
     return MaterialApp(
         title: 'Mooden Fish',
         theme: ThemeData(
@@ -18,6 +29,18 @@ class MyApp extends StatelessWidget {
               backgroundColor: Color(0Xff066eb2),
               foregroundColor: Colors.white),
         ),
-        home: BottomTabBarView());
+        home: RepositoryProvider(
+          create: (context) => WoodenRepository(woodenApi: localSettingAPI),
+          child: MultiBlocProvider(
+            providers: [
+              BlocProvider<Woodfish_widgetBloc>(
+                create: (BuildContext context) => Woodfish_widgetBloc(woodenRepository: RepositoryProvider.of<WoodenRepository>(context))
+              ),
+            ],
+            child: BottomTabBarView()
+          ),
+        ),
+
+    );
   }
 }

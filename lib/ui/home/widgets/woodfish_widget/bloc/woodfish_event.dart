@@ -9,3 +9,8 @@ class IsAutoEvent extends Woodfish_widgetEvent {
 
   final bool isAuto;
 }
+class IsDisplayEvent extends Woodfish_widgetEvent {
+  IsDisplayEvent({required this.isDisplay});
+
+  final bool isDisplay;
+}

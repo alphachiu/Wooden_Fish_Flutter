@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:grouped_list/grouped_list.dart';
+import 'package:woodenfish_bloc/repository/wooden_repository.dart';
+import 'package:woodenfish_bloc/ui/home/widgets/woodfish_widget/bloc/woodfish_bloc.dart';
+import 'package:woodenfish_bloc/ui/home/widgets/woodfish_widget/bloc/woodfish_event.dart' as wood_fish_b;
 
 import 'bloc/setting_bloc.dart';
 import 'bloc/setting_event.dart';
@@ -10,19 +13,20 @@ class Setting_widgetPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (BuildContext context) => Setting_widgetBloc()..add(InitEvent()),
+      create: (BuildContext context) =>
+      Setting_widgetBloc(woodenRepository: RepositoryProvider.of<WoodenRepository>(context))..add(InitEvent()),
       child: Builder(builder: (context) => _buildPage(context)),
     );
   }
 
   Widget _buildPage(BuildContext context) {
-    final bloc = BlocProvider.of<Setting_widgetBloc>(context);
+
 
     return Container(
       color: Colors.white,
       child: SafeArea(
           child: Scaffold(
-              backgroundColor: Color(0xFFF5F6F9),
+              backgroundColor: const Color(0xFFF5F6F9),
               body: BlocBuilder<Setting_widgetBloc, Setting_widgetState>(
                   builder: (context, state) {
                 return Column(
@@ -35,7 +39,7 @@ class Setting_widgetPage extends StatelessWidget {
                     Expanded(
                         flex: 8,
                         child: Container(
-                          color: Color(0xFFF5F6F9),
+                          color: const Color(0xFFF5F6F9),
                           child: GroupedListView<dynamic, String>(
                             elements: state.sections,
                             groupComparator: (value1, value2) =>
@@ -51,7 +55,7 @@ class Setting_widgetPage extends StatelessWidget {
                                     left: 30, right: 20, bottom: 10, top: 10),
                                 child: Text(
                                   value,
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                       fontSize: 15,
                                       color: Colors.black54,
                                       fontWeight: FontWeight.bold),
@@ -62,7 +66,6 @@ class Setting_widgetPage extends StatelessWidget {
                               return element['group'];
                             },
                             indexedItemBuilder: (context, element, index) {
-                              print('index = ${index}');
 
                               if (element['name_start'] != null) {
                                 return Padding(
@@ -78,7 +81,7 @@ class Setting_widgetPage extends StatelessWidget {
                                               topRight: Radius.circular(10),
                                             )),
                                         child:
-                                            ListTitle(element['name_start']!),
+                                            ListTitle(context,state,element['name_start']!,index),
                                       ),
                                       Container(
                                         color: Colors.white,
@@ -104,24 +107,41 @@ class Setting_widgetPage extends StatelessWidget {
                                           bottomLeft: Radius.circular(10),
                                           bottomRight: Radius.circular(10),
                                         )),
-                                    child: ListTitle(element['name_end']!),
+                                    child: ListTitle(context,state,element['name_end']!,index),
                                   ),
                                 );
                               } else {
-                                return Padding(
-                                  padding: const EdgeInsets.only(
-                                      left: 15, right: 15),
-                                  child: Container(
-                                    decoration: const BoxDecoration(
-                                        color: Colors.white,
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(10))),
-                                    child: ListTitle(element['name']!),
-                                  ),
-                                );
-                                ;
+                                if(index == 0){
+                                 return Padding(
+                                    padding: const EdgeInsets.only(
+                                        left: 15, right: 15),
+                                    child: Container(
+                                      decoration: const BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(10))),
+                                      child:   Row(children: [
+                                        const SizedBox(width: 15,),
+                                        Expanded(child: TextField(decoration: InputDecoration(hintText: '請輸入祈福文字'),))
+                                      ],)
+                                    ),
+                                  );
+                                }else{
+                                  return Padding(
+                                    padding: const EdgeInsets.only(
+                                        left: 15, right: 15),
+                                    child: Container(
+                                      decoration: const BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(10))),
+                                      child: ListTitle(context,state,element['name']!,index),
+                                    ),
+                                  );
+                                }
                               }
-                            },
+                            }
+                            ,
                           ),
                         ))
                   ],
@@ -130,14 +150,38 @@ class Setting_widgetPage extends StatelessWidget {
     );
   }
 
-  Widget ListTitle(String titleNam) {
+  Widget ListTitle(BuildContext context,Setting_widgetState state,String titleNam,int index) {
+     Widget? switchWidget;
+     final bloc = BlocProvider.of<Setting_widgetBloc>(context);
+
+    if(index == 2  ){
+      switchWidget = Switch.adaptive(value: state.setting.isDisplay, onChanged: (isChange){
+
+          bloc.add(SwitchShowWordEvent(switchDisplay:isChange));
+      });
+    }else if(index == 3){
+      switchWidget = Switch.adaptive(value: state.setting.isVibration, onChanged: (isChange){
+
+        bloc.add(SwitchVibrationEvent(switchVibration:isChange ));
+      });
+    }
+
     return ListTile(
-      title: Text(
-        titleNam,
-        style: const TextStyle(
-          fontSize: 20,
-          color: Colors.black,
-        ),
+      title: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            titleNam,
+            style: const TextStyle(
+              fontSize: 20,
+              color: Colors.black,
+            ),
+          ),
+          switchWidget != null ?
+          switchWidget:
+          const SizedBox()
+
+        ],
       ),
     );
   }
