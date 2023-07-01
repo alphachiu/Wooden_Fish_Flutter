@@ -1,12 +1,22 @@
 import 'package:woodenfish_bloc/repository/api/setting_api.dart';
-import 'package:woodenfish_bloc/repository/models/setting.dart';
+import 'package:woodenfish_bloc/repository/models/Local_setting.dart';
+import 'package:woodenfish_bloc/repository/models/auto_knock_setting.dart';
 
-class WoodenRepository{
-  const WoodenRepository({required SettingAPI woodenApi}): _settingAPI = woodenApi;
+class WoodenRepository {
+  const WoodenRepository({required SettingAPI woodenApi})
+      : _settingAPI = woodenApi;
 
   final SettingAPI _settingAPI;
 
-  Future<void> saveSetting(Setting setting) => _settingAPI.saveInfo(setting);
-  Setting getSetting() => _settingAPI.getInfo();
+  Future<void> saveSetting(LocalSetting setting) =>
+      _settingAPI.saveInfo(setting);
+
+  LocalSetting getSetting() => _settingAPI.getInfo();
+
   Future<void> deleteSetting() => _settingAPI.deleteSettingInfo();
+
+  AutoKnockSetting getAutoKnockSettingInfo() =>
+      _settingAPI.getAutoKnockSettingInfo();
+  void saveAutoKnockSetting(AutoKnockSetting setting) =>
+      _settingAPI.saveAutoKnockSetting(setting);
 }

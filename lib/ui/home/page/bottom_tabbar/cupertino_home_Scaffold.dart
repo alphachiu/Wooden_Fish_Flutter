@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:woodenfish_bloc/ui/home/page/tab_Item.dart';
+import 'package:woodenfish_bloc/ui/home/page/bottom_tabbar/tab_Item.dart';
+
 import 'package:woodenfish_bloc/utils/router.dart' as routers;
 
 class CupertinoHomeScaffold extends StatelessWidget {
@@ -42,7 +43,9 @@ class CupertinoHomeScaffold extends StatelessWidget {
 
   BottomNavigationBarItem _buildItem(TabItem tabItem) {
     final itemData = TabItemData.allTabs[tabItem]!;
-    final color = currentTab == tabItem ? const Color(0xFF066eb2) : const Color(0xFF555555);
+    final color = currentTab == tabItem
+        ? const Color(0xFF066eb2)
+        : const Color(0xFF555555);
     return BottomNavigationBarItem(
       icon: itemData.icon,
       label: itemData.title,

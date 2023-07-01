@@ -3,11 +3,12 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:woodenfish_bloc/repository/api/setting_api.dart';
-import 'package:woodenfish_bloc/repository/models/setting.dart';
+import 'package:woodenfish_bloc/repository/models/Local_setting.dart';
+import 'package:woodenfish_bloc/repository/models/auto_knock_setting.dart';
 
-class LocalStorageSettingApi extends SettingAPI{
-
-  LocalStorageSettingApi({required SharedPreferences plugin}): _plugin = plugin {
+class LocalStorageSettingApi extends SettingAPI {
+  LocalStorageSettingApi({required SharedPreferences plugin})
+      : _plugin = plugin {
     _init();
   }
 
@@ -15,7 +16,8 @@ class LocalStorageSettingApi extends SettingAPI{
   static const settingKey = 'settingKey';
 
   final SharedPreferences _plugin;
-  late Setting? settingInfo = Setting();
+  LocalSetting? settingInfo = LocalSetting();
+  AutoKnockSetting? autoSetting;
 
   String? _getValue(String key) => _plugin.getString(key);
   Future<void> _setValue(String key, String value) =>
@@ -23,17 +25,17 @@ class LocalStorageSettingApi extends SettingAPI{
   Future<void> _deleteValue(String key) => _plugin.remove(key);
 
   void _init() {
-    print('init loacal api');
     final settingJson = _getValue(settingKey);
     print('settingJson = $settingJson');
     if (settingJson != null) {
-
-      settingInfo = Setting.fromJson(Map<String, dynamic>.from(json.decode(settingJson)));
+      settingInfo = LocalSetting.fromJson(
+          Map<String, dynamic>.from(json.decode(settingJson)));
     }
+    autoSetting = AutoKnockSetting();
   }
 
   @override
-  Setting getInfo() {
+  LocalSetting getInfo() {
     // TODO: implement getInfo
     return settingInfo!;
   }
@@ -42,7 +44,7 @@ class LocalStorageSettingApi extends SettingAPI{
   Future<void> saveInfo(setting) {
     // TODO: implement saveInfo
     settingInfo = setting;
-   return  _setValue(settingKey, json.encode(settingInfo));
+    return _setValue(settingKey, json.encode(settingInfo));
   }
 
   @override
@@ -51,4 +53,15 @@ class LocalStorageSettingApi extends SettingAPI{
     return _deleteValue(settingKey);
   }
 
+  @override
+  AutoKnockSetting getAutoKnockSettingInfo() {
+    // TODO: implement getAutoKnockSettingInfo
+    return autoSetting!;
+  }
+
+  @override
+  void saveAutoKnockSetting(AutoKnockSetting setting) {
+    // TODO: implement saveAutoKnockSetting
+    autoSetting = setting;
+  }
 }

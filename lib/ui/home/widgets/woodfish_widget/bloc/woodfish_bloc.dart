@@ -2,51 +2,70 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:woodenfish_bloc/repository/models/auto_knock_setting.dart';
 import 'package:woodenfish_bloc/repository/wooden_repository.dart';
 import 'package:woodenfish_bloc/ui/home/widgets/woodfish_widget/knock_text_widget.dart';
 import 'package:woodenfish_bloc/utils/AudioPlayUtil.dart';
 import 'woodfish_event.dart';
 import 'woodfish_state.dart';
 
-class Woodfish_widgetBloc
-    extends Bloc<Woodfish_widgetEvent, Woodfish_widgetState> {
-
-
-  Woodfish_widgetBloc({required  WoodenRepository woodenRepository}) :
-        _woodenRepository = woodenRepository,
-        super(Woodfish_widgetState().init()) {
+class WoodfishWidgetBloc
+    extends Bloc<WoodfishWidgetEvent, WoodfishWidgetState> {
+  WoodfishWidgetBloc({required WoodenRepository woodenRepository})
+      : _woodenRepository = woodenRepository,
+        super(WoodfishWidgetState().init()) {
     on<InitEvent>(_init);
     on<IncrementEvent>(_increment);
     on<IsAutoEvent>(_isAutoEvent);
   }
 
- final WoodenRepository _woodenRepository;
+  final WoodenRepository _woodenRepository;
   final List<Widget> _knockAnimationWidgets = [];
   late Timer autoKnockTimer;
 
-
-  void _init(InitEvent event, Emitter<Woodfish_widgetState> emit) async {
-
-   // await _woodenRepository.deleteSetting();
+  void _init(InitEvent event, Emitter<WoodfishWidgetState> emit) async {
+    state.setting = _woodenRepository.getSetting();
     emit(state.clone());
   }
 
-  void _increment(IncrementEvent event, Emitter<Woodfish_widgetState> emit) async{
+  void _increment(
+      IncrementEvent event, Emitter<WoodfishWidgetState> emit) async {
+    //get autoKnockSettingInfo
+    var autoKnockSetting = _woodenRepository.getAutoKnockSettingInfo();
+    print('is open auto stop = ${autoKnockSetting.isAutoStop}');
+    print('autoKnockSetting.type = ${autoKnockSetting.type}');
+    print('autoKnockSetting.limitCount = ${autoKnockSetting.limitCount}');
+    print('autoKnockSetting.currentCount = ${autoKnockSetting.currentCount}');
+    //check return condition
+    if ((autoKnockSetting.isAutoStop &&
+        autoKnockSetting.type == AutoStop.count &&
+        autoKnockSetting.limitCount == autoKnockSetting.currentCount)) {
+      return;
+    }
     state.totalCount++;
-    state.setting = _woodenRepository.getSetting();
-    print('state.setting isDisplay = ${state.setting.isDisplay}');
+    state.currentCount++;
+    //save autoKnockSettingInfo
+    state.autoKnockSetting = autoKnockSetting;
+    state.autoKnockSetting.currentCount = state.currentCount;
+    print('state.autoKnockSetting.currentCount = ${state.currentCount}');
+    _woodenRepository.saveAutoKnockSetting(state.autoKnockSetting);
 
-    if(state.setting.isVibration){
+    //get setting
+    state.setting = _woodenRepository.getSetting();
+
+    //check Vibration
+    if (state.setting.isVibration) {
       await HapticFeedback.vibrate();
     }
 
-    if(state.setting.isDisplay){
+    //check Display
+    if (state.setting.isDisplay) {
       AudioPlayUtil().play('sounds/woodenFish_01.wav');
 
       KnockTextWidget knockWidget = KnockTextWidget(
-          childWidget: const Text(
-            "＋ 1",
-            style: TextStyle(fontSize: 24.0),
+          childWidget: Text(
+            state.setting.displayWord,
+            style: const TextStyle(fontSize: 24.0),
           ),
           onRemove: (widget) async {
             await _removeWidget(widget);
@@ -60,14 +79,11 @@ class Woodfish_widgetBloc
     emit(state.clone());
   }
 
-  void _isAutoEvent(IsAutoEvent event, Emitter<Woodfish_widgetState> emit) {
+  void _isAutoEvent(IsAutoEvent event, Emitter<WoodfishWidgetState> emit) {
     state.isAuto = event.isAuto;
 
     emit(state.clone());
   }
-
-
-
 
   Future<void> _removeWidget(KnockTextWidget widget) async {
     if (widget.onRemove != null) {

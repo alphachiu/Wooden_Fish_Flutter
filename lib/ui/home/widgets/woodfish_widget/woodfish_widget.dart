@@ -27,18 +27,16 @@ class _Woodfish_windgePageState extends State<Woodfish_widgetPage>
   late Timer autoKnockTimer;
   late int milliseconds = 500;
 
-
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-
   }
 
-  void startAuto(Woodfish_widgetBloc bloc) {
+  void startAuto(WoodfishWidgetBloc bloc) {
     autoKnockTimer =
-        Timer.periodic(Duration(milliseconds: milliseconds), (timer) {
-            bloc.add(IncrementEvent());
+        Timer.periodic(Duration(milliseconds: milliseconds * 1000), (timer) {
+      bloc.add(IncrementEvent());
     });
   }
 
@@ -56,119 +54,124 @@ class _Woodfish_windgePageState extends State<Woodfish_widgetPage>
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (BuildContext context) => Woodfish_widgetBloc(woodenRepository: RepositoryProvider.of<WoodenRepository>(context) )..add(InitEvent()),
+      create: (BuildContext context) => WoodfishWidgetBloc(
+          woodenRepository: RepositoryProvider.of<WoodenRepository>(context))
+        ..add(InitEvent()),
       child: Builder(builder: (context) => _buildPage(context)),
     );
   }
 
   Widget _buildPage(BuildContext context) {
-    final bloc = BlocProvider.of<Woodfish_widgetBloc>(context);
-    print("parant");
+    final bloc = BlocProvider.of<WoodfishWidgetBloc>(context);
+    print("home parant");
+
     return Container(
       color: Colors.white,
       child: SafeArea(
         child: Scaffold(
             backgroundColor: Colors.white,
-            body: BlocConsumer<Woodfish_widgetBloc,Woodfish_widgetState>(
-                listener: (context,state) {
-                     print('wooden fish , Woodfish_widgetState change');
+            body: BlocConsumer<WoodfishWidgetBloc, WoodfishWidgetState>(
+                listener: (context, state) {
+              print('Wood fish listener');
+            }, builder: (context, state) {
+              if (state.isAuto &&
+                  milliseconds != state.setting.autoSpeed.toInt()) {
+                milliseconds = state.setting.autoSpeed.toInt();
+                stopAuto();
+                startAuto(bloc);
+              }
 
-                },
-                builder: (context,state){
-
-                  return BlocBuilder<Woodfish_widgetBloc, Woodfish_widgetState>(
-                    builder: (context, state) {
-                      return Stack(
+              return BlocBuilder<WoodfishWidgetBloc, WoodfishWidgetState>(
+                builder: (context, state) {
+                  return Stack(
+                    children: [
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Expanded(
-                                flex: 1,
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
+                          Expanded(
+                            flex: 1,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
                                   children: [
-                                    Row(
+                                    const SizedBox(
+                                      width: 20,
+                                    ),
+                                    Column(
                                       children: [
                                         const SizedBox(
-                                          width: 20,
+                                          height: 10,
                                         ),
-                                        Column(
-                                          children: [
-                                            const SizedBox(
-                                              height: 10,
-                                            ),
-                                            Text(
-                                              '累積敲${state.totalCount}次',
-                                              style: TextStyle(fontSize: 20.0),
-                                            ),
-                                          ],
+                                        Text(
+                                          '累積敲${state.totalCount}次',
+                                          style: TextStyle(fontSize: 20.0),
                                         ),
                                       ],
                                     ),
-                                    Row(
-                                      children: [
-                                        Text(state.isAuto ? '自動' : '手動',
-                                            style: TextStyle(fontSize: 20.0)),
-                                        Switch.adaptive(
-                                            value: state.isAuto,
-                                            onChanged: (isChange) {
-                                              bloc.add(
-                                                  IsAutoEvent(isAuto: isChange));
-                                              //milliseconds += 2000;
-                                              if (!isChange) {
-                                                stopAuto();
-                                              } else {
-                                                startAuto(bloc);
-                                              }
-                                            }),
-                                        const SizedBox(
-                                          width: 10,
-                                        ),
-                                      ],
-                                    )
                                   ],
                                 ),
-                              ), //MediaQuery.of(context).size.height
-                              Expanded(
-                                flex: 1,
-                                child: InkWell(
-                                  highlightColor: Colors.transparent,
-                                  splashColor: Colors.transparent,
-                                  onTap: () async{
-                                    bloc.add(IncrementEvent());
-
-
-                                  },
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                Row(
+                                  children: [
+                                    Text(state.isAuto ? '自動' : '手動',
+                                        style: TextStyle(fontSize: 20.0)),
+                                    Switch.adaptive(
+                                        value: state.isAuto,
+                                        onChanged: (isChange) {
+                                          bloc.add(
+                                              IsAutoEvent(isAuto: isChange));
+                                          //milliseconds += 2000;
+                                          if (!isChange) {
+                                            stopAuto();
+                                          } else {
+                                            startAuto(bloc);
+                                          }
+                                        }),
+                                    const SizedBox(
+                                      width: 10,
+                                    ),
+                                  ],
+                                )
+                              ],
+                            ),
+                          ), //MediaQuery.of(context).size.height
+                          Expanded(
+                            flex: 1,
+                            child: InkWell(
+                              highlightColor: Colors.transparent,
+                              splashColor: Colors.transparent,
+                              onTap: () async {
+                                bloc.add(IncrementEvent());
+                              },
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Stack(
                                     children: [
                                       Stack(
-                                        children: [
-                                          Stack(
-                                              children:
+                                          children:
                                               state.knockAnimationWidgets),
-                                          const Image(
-                                            image: AssetImage(
-                                                'assets/images/wooden-fish.png'),
-                                            width: 250,
-                                            height: 250,
-                                          ),
-                                        ],
+                                      const Image(
+                                        image: AssetImage(
+                                            'assets/images/wooden-fish.png'),
+                                        width: 250,
+                                        height: 250,
                                       ),
                                     ],
                                   ),
-                                ),
+                                ],
                               ),
-                            ],
+                            ),
                           ),
                         ],
-                      );
-                    },
+                      ),
+                    ],
                   );
-                })),
+                },
+              );
+            })),
       ),
     );
   }

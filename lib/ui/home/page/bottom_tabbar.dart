@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:woodenfish_bloc/ui/home/page/cupertino_home_Scaffold.dart';
-import 'package:woodenfish_bloc/ui/home/page/tab_Item.dart';
+import 'package:woodenfish_bloc/ui/home/page/bottom_tabbar/cupertino_home_Scaffold.dart';
+import 'package:woodenfish_bloc/ui/home/page/bottom_tabbar/tab_Item.dart';
 
 import 'package:woodenfish_bloc/ui/home/widgets/setting_widget/setting_view.dart';
 
@@ -24,7 +24,7 @@ class _BottomTabBarViewState extends State<BottomTabBarView> {
   Map<TabItem, WidgetBuilder> get widgetBuilders {
     return {
       TabItem.home: (_) => Woodfish_widgetPage(),
-      TabItem.setting: (_) => Setting_widgetPage(),
+      TabItem.setting: (_) => SettingWidgetPage(),
     };
   }
 
@@ -59,6 +59,7 @@ class _BottomTabBarViewState extends State<BottomTabBarView> {
 
   @override
   Widget build(BuildContext context) {
+    print('tabbar main');
     return WillPopScope(
       onWillPop: () async {
         Route? topRoute;
@@ -68,65 +69,22 @@ class _BottomTabBarViewState extends State<BottomTabBarView> {
           print('top screen name = ${route.settings.name}');
           return true;
         });
-
-        // if (topRoute?.settings.name == 'webview') {
-        //   print('webview');
-        //   webviewGlobalKeys[_currentTab]?.currentState?.onWillPop();
-        //
-        //   // webviewGlobalKey.currentState?.onWillPop();
-        //
-        //   return false;
-        // } else {
-        //   var canPop = navigatorKeys[_currentTab]!.currentState!.canPop();
-        //   print("navigatorKeys[tabItem]!.currentState!.canPop() = ${canPop}");
-        //   if (!canPop) {
-        //     bool isExist = await showAlertDialog_Willpopscope(context);
-        //
-        //     AppConfig().analytics?.logEvent(
-        //         name: 'WillPopScope_Exit', parameters: {"user_id": null});
-        //     print('isExist = ${isExist}');
-        //     if (isExist) {
-        //       return exit(0);
-        //     } else {
-        //       return false;
-        //     }
-        //   } else {
-        //     navigatorKeys[_currentTab]!.currentState?.pop();
-        //     return false;
-        //   }
-        // }
-
-        // var isWebObserve =
-        //     WebViewObserve().webview_popscrop_Observe.hasListener;
-        // print('isWebObserve = ${isWebObserve}');
-
-        // if (!isWebObserve) {
-        //   bool isExist = await showAlertDialog_Willpopscope(context);
-        //   print('isExist = ${isExist}');
-        //
-        //   return isExist;
-        // } else {
-        //   print('in webview');
-        //   WebViewObserve().webview_popscrop_Observe.add(true);
-        //   return false;
-        // }
-
-        // print("WillPopScope 1");
-        // await showAlertDialog(context, content: "是否要退出", doneActon: () async {
-        //   print("WillPopScope 2");
-        //
-        //   return true;
-        //   // return !(await navigatorKeys[_currentTab]!.currentState?.maybePop() ??
-        //   //      false);
-        // });
-        // print("WillPopScope 3");
         return false;
       },
-      child: CupertinoHomeScaffold(
-        currentTab: _currentTab,
-        onSelectTab: _select,
-        widgetBuilders: widgetBuilders,
-        navigatorKeys: navigatorKeys,
+      child: Stack(
+        children: [
+          CupertinoHomeScaffold(
+            currentTab: _currentTab,
+            onSelectTab: _select,
+            widgetBuilders: widgetBuilders,
+            navigatorKeys: navigatorKeys,
+          ),
+          Container(
+            width: 100,
+            height: 100,
+            color: Colors.red,
+          )
+        ],
       ),
     );
   }

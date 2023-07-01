@@ -1,15 +1,16 @@
-abstract class Woodfish_widgetEvent {}
+abstract class WoodfishWidgetEvent {}
 
-class InitEvent extends Woodfish_widgetEvent {}
+class InitEvent extends WoodfishWidgetEvent {}
 
-class IncrementEvent extends Woodfish_widgetEvent {}
+class IncrementEvent extends WoodfishWidgetEvent {}
 
-class IsAutoEvent extends Woodfish_widgetEvent {
+class IsAutoEvent extends WoodfishWidgetEvent {
   IsAutoEvent({required this.isAuto});
 
   final bool isAuto;
 }
-class IsDisplayEvent extends Woodfish_widgetEvent {
+
+class IsDisplayEvent extends WoodfishWidgetEvent {
   IsDisplayEvent({required this.isDisplay});
 
   final bool isDisplay;

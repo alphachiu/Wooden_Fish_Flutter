@@ -1,14 +1,19 @@
-abstract class Setting_widgetEvent {}
+abstract class SettingWidgetEvent {}
 
-class InitEvent extends Setting_widgetEvent {}
+class InitEvent extends SettingWidgetEvent {}
 
-class SwitchShowWordEvent extends Setting_widgetEvent {
+class SwitchShowWordEvent extends SettingWidgetEvent {
   SwitchShowWordEvent({required this.switchDisplay});
 
-    bool switchDisplay;
+  bool switchDisplay;
 }
-class SwitchVibrationEvent extends Setting_widgetEvent {
+
+class SwitchVibrationEvent extends SettingWidgetEvent {
   SwitchVibrationEvent({required this.switchVibration});
   final bool switchVibration;
+}
 
+class ChangeDisplayWordEvent extends SettingWidgetEvent {
+  ChangeDisplayWordEvent({required this.displayWord});
+  final String displayWord;
 }

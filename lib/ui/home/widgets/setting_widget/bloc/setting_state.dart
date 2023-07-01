@@ -1,26 +1,27 @@
-import 'package:woodenfish_bloc/repository/models/setting.dart';
+import 'package:woodenfish_bloc/repository/models/Local_setting.dart';
+import 'package:woodenfish_bloc/repository/models/setting_model.dart';
 
-class Setting_widgetState {
-  late List sections;
-  late Setting setting;
+class SettingWidgetState {
+  late List<SettingModel> sections;
+  late LocalSetting setting;
 
-
-  Setting_widgetState init() {
-    return Setting_widgetState()
+  SettingWidgetState init() {
+    return SettingWidgetState()
       ..sections = [
-        {'name': '變更祈福文', 'group': '祈福文字'},
-        {'name': '敲擊設置', 'group': '播放模式'},
-        {'name_start': '顯示祈福文', 'group': '其他設置'},
-        {'name_end': '震動', 'group': '其他設置'},
+        SettingModel(
+            name: '變更祈福文', position: SettingPosition.none, group: '祈福文字'),
+        SettingModel(
+            name: '自動敲擊設置', position: SettingPosition.none, group: '播放模式'),
+        SettingModel(
+            name: '顯示祈福文', position: SettingPosition.head, group: '其他設置'),
+        SettingModel(name: '震動', position: SettingPosition.end, group: '其他設置')
       ]
-      ..setting = Setting()
-    ;
+      ..setting = LocalSetting();
   }
 
-  Setting_widgetState clone() {
-    return Setting_widgetState()
+  SettingWidgetState clone() {
+    return SettingWidgetState()
       ..sections = sections
-      ..setting = setting
-    ;
+      ..setting = setting;
   }
 }

@@ -1,29 +1,32 @@
 import 'package:flutter/material.dart';
-import 'package:woodenfish_bloc/repository/models/setting.dart';
+import 'package:woodenfish_bloc/repository/models/Local_setting.dart';
+import 'package:woodenfish_bloc/repository/models/auto_knock_setting.dart';
 
-class Woodfish_widgetState {
+class WoodfishWidgetState {
   late int totalCount;
+  late int currentCount;
   late List<Widget> knockAnimationWidgets;
   late bool isAuto;
-  late Setting setting;
+  late LocalSetting setting;
+  late AutoKnockSetting autoKnockSetting;
 
-  Woodfish_widgetState init() {
-    return Woodfish_widgetState()
+  WoodfishWidgetState init() {
+    return WoodfishWidgetState()
       ..totalCount = 0
+      ..currentCount = 0
       ..knockAnimationWidgets = []
       ..isAuto = false
-      ..setting = Setting();
-    ;
-
+      ..setting = LocalSetting()
+      ..autoKnockSetting = AutoKnockSetting();
   }
 
-  Woodfish_widgetState clone() {
-
-    return Woodfish_widgetState()
+  WoodfishWidgetState clone() {
+    return WoodfishWidgetState()
       ..totalCount = totalCount
+      ..currentCount = currentCount
       ..knockAnimationWidgets = knockAnimationWidgets
       ..isAuto = isAuto
-
-    ;
+      ..setting = setting
+      ..autoKnockSetting = autoKnockSetting;
   }
 }
