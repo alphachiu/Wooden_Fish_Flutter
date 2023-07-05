@@ -1,16 +1,18 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:woodenfish_bloc/repository/models/Local_setting.dart';
+import 'package:woodenfish_bloc/repository/models/auto_knock_setting.dart';
 import 'package:woodenfish_bloc/repository/models/setting_model.dart';
 
 class AutoSettingState {
   late List<SettingModel> sectionList;
   late LocalSetting setting;
   late bool isAutoStop;
-  late Map<String, Widget> autoStopSegList;
+  late Map<AutoStop, Widget> autoStopSegList;
   late Map<String, Widget> countDownSegList;
-  late String autoStopCurrentIndex;
-  late String countDownCurrentIndex;
+  late AutoStop autoStopType;
+  late String countDownType;
+  late AutoKnockSetting autoKnockSetting;
 
   AutoSettingState init() {
     return AutoSettingState()
@@ -20,15 +22,16 @@ class AutoSettingState {
         SettingModel(name: '間隔', position: SettingPosition.none, group: '敲擊間隔'),
       ]
       ..setting = LocalSetting()
+      ..autoKnockSetting = AutoKnockSetting()
       ..isAutoStop = false
       ..autoStopSegList = {
-        'count': const Padding(
+        AutoStop.count: const Padding(
             padding: EdgeInsets.symmetric(vertical: 10.0),
             child: Text(
               '計數',
               style: TextStyle(color: Colors.black, fontSize: 18),
             )),
-        'countdown': const Padding(
+        AutoStop.countDown: const Padding(
             padding: EdgeInsets.symmetric(vertical: 10.0),
             child: Text('倒計時',
                 style: TextStyle(color: Colors.black, fontSize: 18))),
@@ -57,18 +60,19 @@ class AutoSettingState {
             child: Text('60 min',
                 style: TextStyle(color: Colors.black, fontSize: 18))),
       }
-      ..autoStopCurrentIndex = 'count'
-      ..countDownCurrentIndex = '5';
+      ..autoStopType = AutoStop.count
+      ..countDownType = '5';
   }
 
   AutoSettingState clone() {
     return AutoSettingState()
       ..sectionList = sectionList
       ..setting = setting
+      ..autoKnockSetting = autoKnockSetting
       ..isAutoStop = isAutoStop
       ..autoStopSegList = autoStopSegList
       ..countDownSegList = countDownSegList
-      ..autoStopCurrentIndex = autoStopCurrentIndex
-      ..countDownCurrentIndex = countDownCurrentIndex;
+      ..autoStopType = autoStopType
+      ..countDownType = countDownType;
   }
 }

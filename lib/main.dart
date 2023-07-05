@@ -33,8 +33,8 @@ class MyApp extends StatelessWidget {
       home: RepositoryProvider(
         create: (context) => WoodenRepository(woodenApi: localSettingAPI),
         child: MultiBlocProvider(providers: [
-          BlocProvider<WoodfishWidgetBloc>(
-              create: (BuildContext context) => WoodfishWidgetBloc(
+          BlocProvider<WoodFishWidgetBloc>(
+              create: (BuildContext context) => WoodFishWidgetBloc(
                   woodenRepository:
                       RepositoryProvider.of<WoodenRepository>(context))),
           BlocProvider<BottomTabBarBloc>(

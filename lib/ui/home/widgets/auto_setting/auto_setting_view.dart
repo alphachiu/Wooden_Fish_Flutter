@@ -94,7 +94,7 @@ class _AutoSettingPageState extends State<AutoSettingPage> {
                         Widget thirdLayerWidget = const SizedBox();
 
                         if (state.isAutoStop) {
-                          if (state.autoStopCurrentIndex == 'count') {
+                          if (state.autoStopType == AutoStop.count) {
                             thirdLayerWidget = Padding(
                               padding:
                                   const EdgeInsets.only(left: 15, right: 15),
@@ -110,7 +110,6 @@ class _AutoSettingPageState extends State<AutoSettingPage> {
                                       int.parse(limitInt) < 1) {
                                     limitInt = '1';
                                   }
-
                                   btBloc.add(InputLimitCountEvent(
                                       limitCount: int.parse(limitInt)));
                                 },
@@ -126,9 +125,9 @@ class _AutoSettingPageState extends State<AutoSettingPage> {
                                   selectedColor: const Color(0xff37CACF),
                                   unselectedColor: const Color(0xFFF0F1F3),
                                   pressedColor: const Color(0xff37CACF),
-                                  groupValue: state.countDownCurrentIndex,
+                                  groupValue: state.countDownType,
                                   onValueChanged: (Object value) {
-                                    bloc.add(ChangeCountDownSegmentedEvent(
+                                    bloc.add(ChangeCountDownTypeEvent(
                                         isChange: value as String));
                                   },
                                   children: state.countDownSegList,
@@ -191,19 +190,14 @@ class _AutoSettingPageState extends State<AutoSettingPage> {
                                                     backgroundColor:
                                                         const Color(0xFFF0F1F3),
                                                     groupValue: state
-                                                        .autoStopCurrentIndex,
+                                                        .autoStopType,
                                                     onValueChanged: (value) {
                                                       bloc.add(
-                                                          ChangeAutoStopSegmentedEvent(
-                                                              isChange: value
-                                                                  as String));
-                                                      var type = (value ==
-                                                              'count')
-                                                          ? AutoStop.count
-                                                          : AutoStop.countDown;
+                                                          ChangeAutoStopTypeEvent(
+                                                              isChange: value!));
                                                       btBloc.add(
                                                           ChangeTypeEvent(
-                                                              change: type));
+                                                              change: value!));
                                                     },
                                                     children:
                                                         state.autoStopSegList,
@@ -227,8 +221,8 @@ class _AutoSettingPageState extends State<AutoSettingPage> {
                                               bottomLeft: Radius.circular(10),
                                               bottomRight: Radius.circular(10),
                                             )),
-                                        child: Row(
-                                          children: const [
+                                        child: const Row(
+                                          children: [
                                             Expanded(
                                                 child: SizedBox(
                                               height: 10,

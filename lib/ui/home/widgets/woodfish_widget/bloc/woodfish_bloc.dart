@@ -1,19 +1,22 @@
 import 'dart:async';
+
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:woodenfish_bloc/repository/models/auto_knock_setting.dart';
 import 'package:woodenfish_bloc/repository/wooden_repository.dart';
+import 'package:woodenfish_bloc/ui/home/page/bottom_tabbar/bloc/bottom_tabbar_event.dart';
 import 'package:woodenfish_bloc/ui/home/widgets/woodfish_widget/knock_text_widget.dart';
 import 'package:woodenfish_bloc/utils/AudioPlayUtil.dart';
 import 'woodfish_event.dart';
 import 'woodfish_state.dart';
 
-class WoodfishWidgetBloc
-    extends Bloc<WoodfishWidgetEvent, WoodfishWidgetState> {
-  WoodfishWidgetBloc({required WoodenRepository woodenRepository})
+class WoodFishWidgetBloc
+    extends Bloc<WoodFishWidgetEvent, WoodFishWidgetState> {
+  WoodFishWidgetBloc({required WoodenRepository woodenRepository})
       : _woodenRepository = woodenRepository,
-        super(WoodfishWidgetState().init()) {
+        super(WoodFishWidgetState().init()) {
     on<InitEvent>(_init);
     on<IncrementEvent>(_increment);
     on<IsAutoEvent>(_isAutoEvent);
@@ -23,19 +26,26 @@ class WoodfishWidgetBloc
   final List<Widget> _knockAnimationWidgets = [];
   late Timer autoKnockTimer;
 
-  void _init(InitEvent event, Emitter<WoodfishWidgetState> emit) async {
+  void _init(InitEvent event, Emitter<WoodFishWidgetState> emit) async {
     state.setting = _woodenRepository.getSetting();
     emit(state.clone());
   }
 
   void _increment(
-      IncrementEvent event, Emitter<WoodfishWidgetState> emit) async {
+      IncrementEvent event, Emitter<WoodFishWidgetState> emit) async {
     //get autoKnockSettingInfo
     var autoKnockSetting = _woodenRepository.getAutoKnockSettingInfo();
     print('is open auto stop = ${autoKnockSetting.isAutoStop}');
     print('autoKnockSetting.type = ${autoKnockSetting.type}');
     print('autoKnockSetting.limitCount = ${autoKnockSetting.limitCount}');
     print('autoKnockSetting.currentCount = ${autoKnockSetting.currentCount}');
+
+    if(autoKnockSetting.isAutoStop &&
+        autoKnockSetting.type == AutoStop.count &&
+        autoKnockSetting.limitCount != state.currentLimit){
+      state.currentLimit = autoKnockSetting.limitCount;
+      state.currentCount = 0;
+    }
     //check return condition
     if ((autoKnockSetting.isAutoStop &&
         autoKnockSetting.type == AutoStop.count &&
@@ -44,6 +54,7 @@ class WoodfishWidgetBloc
     }
     state.totalCount++;
     state.currentCount++;
+
     //save autoKnockSettingInfo
     state.autoKnockSetting = autoKnockSetting;
     state.autoKnockSetting.currentCount = state.currentCount;
@@ -76,10 +87,21 @@ class WoodfishWidgetBloc
       ));
       state.knockAnimationWidgets = _knockAnimationWidgets;
     }
+
+    if ((state.autoKnockSetting.isAutoStop &&
+        state.autoKnockSetting.type == AutoStop.count &&
+        state.autoKnockSetting.currentCount <= state.autoKnockSetting.limitCount)) {
+
+      print('state.currentCount = ${state.currentCount}');
+      event.btTabBar.add(CurrentCountEvent(count: state.currentCount));
+
+    }
+
     emit(state.clone());
+
   }
 
-  void _isAutoEvent(IsAutoEvent event, Emitter<WoodfishWidgetState> emit) {
+  void _isAutoEvent(IsAutoEvent event, Emitter<WoodFishWidgetState> emit) {
     state.isAuto = event.isAuto;
 
     emit(state.clone());

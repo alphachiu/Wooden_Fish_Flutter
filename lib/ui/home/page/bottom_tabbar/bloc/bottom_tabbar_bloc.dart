@@ -44,8 +44,9 @@ class BottomTabBarBloc extends Bloc<BottomTabBarEvent, BottomTabBarState> {
       InputLimitCountEvent event, Emitter<BottomTabBarState> emit) async {
     //save autoKnock state
     state.autoKnockSetting.limitCount = event.limitCount;
+    state.autoKnockSetting.currentCount = 0;
     _woodenRepository.saveAutoKnockSetting(state.autoKnockSetting);
-
+    state.currentCount = 0;
     state.limitCount = event.limitCount;
     emit(state.clone());
   }

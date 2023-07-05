@@ -1,16 +1,22 @@
-abstract class WoodfishWidgetEvent {}
+import 'package:flutter/material.dart';
+import 'package:woodenfish_bloc/ui/home/page/bottom_tabbar/bloc/bottom_tabbar_bloc.dart';
 
-class InitEvent extends WoodfishWidgetEvent {}
+abstract class WoodFishWidgetEvent {}
 
-class IncrementEvent extends WoodfishWidgetEvent {}
+class InitEvent extends WoodFishWidgetEvent {}
 
-class IsAutoEvent extends WoodfishWidgetEvent {
+class IncrementEvent extends WoodFishWidgetEvent {
+  IncrementEvent({required this.btTabBar});
+  final BottomTabBarBloc btTabBar;
+}
+
+class IsAutoEvent extends WoodFishWidgetEvent {
   IsAutoEvent({required this.isAuto});
 
   final bool isAuto;
 }
 
-class IsDisplayEvent extends WoodfishWidgetEvent {
+class IsDisplayEvent extends WoodFishWidgetEvent {
   IsDisplayEvent({required this.isDisplay});
 
   final bool isDisplay;

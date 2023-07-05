@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'package:woodenfish_bloc/repository/models/auto_knock_setting.dart';
 import 'package:woodenfish_bloc/repository/wooden_repository.dart';
 import 'package:woodenfish_bloc/ui/home/widgets/auto_setting/bloc/auto_setting_state.dart';
 
@@ -11,14 +12,17 @@ class AutoSettingBloc extends Bloc<AutoSettingEvent, AutoSettingState> {
     on<InitEvent>(_init);
     on<SliderProgressEvent>(_sliderProgress);
     on<SwitchAutoStopEvent>(_switchAutoStop);
-    on<ChangeAutoStopSegmentedEvent>(_changeAutoStopSegmented);
-    on<ChangeCountDownSegmentedEvent>(_changeCountDownSegmented);
+    on<ChangeAutoStopTypeEvent>(_changeAutoStopType);
+    on<ChangeCountDownTypeEvent>(_changeCountDownType);
   }
 
   final WoodenRepository _woodenRepository;
 
   void _init(InitEvent event, Emitter<AutoSettingState> emit) async {
     state.setting = _woodenRepository.getSetting();
+    state.isAutoStop = _woodenRepository.getAutoKnockSettingInfo().isAutoStop;
+    state.autoStopType = _woodenRepository.getAutoKnockSettingInfo().type;
+
     emit(state.clone());
   }
 
@@ -32,20 +36,22 @@ class AutoSettingBloc extends Bloc<AutoSettingEvent, AutoSettingState> {
   void _switchAutoStop(
       SwitchAutoStopEvent event, Emitter<AutoSettingState> emit) async {
     state.isAutoStop = event.isChange;
-
+    state.autoKnockSetting.isAutoStop = event.isChange;
     emit(state.clone());
   }
 
-  void _changeAutoStopSegmented(ChangeAutoStopSegmentedEvent event,
+  void _changeAutoStopType(ChangeAutoStopTypeEvent event,
       Emitter<AutoSettingState> emit) async {
-    state.autoStopCurrentIndex = event.isChange;
-
+    state.autoStopType = event.isChange;
+    state.autoKnockSetting.type = event.isChange;
+    print('_changeAutoStopType event.isChange = ${event.isChange}');
+    _woodenRepository.saveAutoKnockSetting(state.autoKnockSetting);
     emit(state.clone());
   }
 
-  void _changeCountDownSegmented(ChangeCountDownSegmentedEvent event,
+  void _changeCountDownType(ChangeCountDownTypeEvent event,
       Emitter<AutoSettingState> emit) async {
-    state.countDownCurrentIndex = event.isChange;
+    state.countDownType = event.isChange;
 
     emit(state.clone());
   }

@@ -5,7 +5,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:woodenfish_bloc/repository/models/auto_knock_setting.dart';
 import 'package:woodenfish_bloc/repository/wooden_repository.dart';
+import 'package:woodenfish_bloc/ui/home/page/bottom_tabbar.dart';
+import 'package:woodenfish_bloc/ui/home/page/bottom_tabbar/bloc/bottom_tabbar_bloc.dart';
+import 'package:woodenfish_bloc/ui/home/page/bottom_tabbar/bloc/bottom_tabbar_event.dart';
 import 'package:woodenfish_bloc/ui/home/widgets/setting_widget/bloc/setting_bloc.dart';
 import 'package:woodenfish_bloc/ui/home/widgets/setting_widget/bloc/setting_state.dart';
 import 'package:woodenfish_bloc/ui/home/widgets/woodfish_widget/knock_text_widget.dart';
@@ -33,10 +37,10 @@ class _Woodfish_windgePageState extends State<Woodfish_widgetPage>
     super.initState();
   }
 
-  void startAuto(WoodfishWidgetBloc bloc) {
+  void startAuto(WoodFishWidgetBloc bloc,BottomTabBarBloc btTabBar) {
     autoKnockTimer =
         Timer.periodic(Duration(milliseconds: milliseconds * 1000), (timer) {
-      bloc.add(IncrementEvent());
+      bloc.add(IncrementEvent(btTabBar: btTabBar));
     });
   }
 
@@ -54,7 +58,7 @@ class _Woodfish_windgePageState extends State<Woodfish_widgetPage>
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (BuildContext context) => WoodfishWidgetBloc(
+      create: (BuildContext context) => WoodFishWidgetBloc(
           woodenRepository: RepositoryProvider.of<WoodenRepository>(context))
         ..add(InitEvent()),
       child: Builder(builder: (context) => _buildPage(context)),
@@ -62,7 +66,8 @@ class _Woodfish_windgePageState extends State<Woodfish_widgetPage>
   }
 
   Widget _buildPage(BuildContext context) {
-    final bloc = BlocProvider.of<WoodfishWidgetBloc>(context);
+    final bloc = BlocProvider.of<WoodFishWidgetBloc>(context);
+    final btBloc = BlocProvider.of<BottomTabBarBloc>(context);
     print("home parant");
 
     return Container(
@@ -70,7 +75,7 @@ class _Woodfish_windgePageState extends State<Woodfish_widgetPage>
       child: SafeArea(
         child: Scaffold(
             backgroundColor: Colors.white,
-            body: BlocConsumer<WoodfishWidgetBloc, WoodfishWidgetState>(
+            body: BlocConsumer<WoodFishWidgetBloc, WoodFishWidgetState>(
                 listener: (context, state) {
               print('Wood fish listener');
             }, builder: (context, state) {
@@ -78,10 +83,10 @@ class _Woodfish_windgePageState extends State<Woodfish_widgetPage>
                   milliseconds != state.setting.autoSpeed.toInt()) {
                 milliseconds = state.setting.autoSpeed.toInt();
                 stopAuto();
-                startAuto(bloc);
+                startAuto(bloc,btBloc);
               }
 
-              return BlocBuilder<WoodfishWidgetBloc, WoodfishWidgetState>(
+              return BlocBuilder<WoodFishWidgetBloc, WoodFishWidgetState>(
                 builder: (context, state) {
                   return Stack(
                     children: [
@@ -125,7 +130,7 @@ class _Woodfish_windgePageState extends State<Woodfish_widgetPage>
                                           if (!isChange) {
                                             stopAuto();
                                           } else {
-                                            startAuto(bloc);
+                                            startAuto(bloc,btBloc);
                                           }
                                         }),
                                     const SizedBox(
@@ -142,7 +147,9 @@ class _Woodfish_windgePageState extends State<Woodfish_widgetPage>
                               highlightColor: Colors.transparent,
                               splashColor: Colors.transparent,
                               onTap: () async {
-                                bloc.add(IncrementEvent());
+
+                                  bloc.add(IncrementEvent(btTabBar: btBloc));
+
                               },
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,

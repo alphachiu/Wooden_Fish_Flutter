@@ -1,3 +1,5 @@
+import 'package:woodenfish_bloc/repository/models/auto_knock_setting.dart';
+
 abstract class AutoSettingEvent {}
 
 class InitEvent extends AutoSettingEvent {}
@@ -13,11 +15,11 @@ class SwitchAutoStopEvent extends AutoSettingEvent {
   final bool isChange;
 }
 
-class ChangeAutoStopSegmentedEvent extends AutoSettingEvent {
-  ChangeAutoStopSegmentedEvent({required this.isChange});
-  final String isChange;
+class ChangeAutoStopTypeEvent extends AutoSettingEvent {
+  ChangeAutoStopTypeEvent({required this.isChange});
+  final AutoStop isChange;
 }
-class ChangeCountDownSegmentedEvent extends AutoSettingEvent {
-  ChangeCountDownSegmentedEvent({required this.isChange});
+class ChangeCountDownTypeEvent extends AutoSettingEvent {
+  ChangeCountDownTypeEvent({required this.isChange});
   final String isChange;
 }
