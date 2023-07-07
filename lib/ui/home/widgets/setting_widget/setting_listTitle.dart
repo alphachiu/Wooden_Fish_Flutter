@@ -21,6 +21,7 @@ class SettingListTitle extends StatelessWidget {
     Widget? trailing = Icon(Icons.chevron_right);
     if (name == "顯示祈福文") {
       switchWidget = Switch.adaptive(
+          activeColor: const Color(0xff37CACF),
           value: state.setting.isDisplay,
           onChanged: (isChange) {
             bloc.add(SwitchShowWordEvent(switchDisplay: isChange));
@@ -28,6 +29,7 @@ class SettingListTitle extends StatelessWidget {
       trailing = null;
     } else if (name == "震動") {
       switchWidget = Switch.adaptive(
+          activeColor: const Color(0xff37CACF),
           value: state.setting.isVibration,
           onChanged: (isChange) {
             bloc.add(SwitchVibrationEvent(switchVibration: isChange));

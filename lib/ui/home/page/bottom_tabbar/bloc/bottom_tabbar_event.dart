@@ -5,9 +5,14 @@ abstract class BottomTabBarEvent {}
 
 class BTInitEvent extends BottomTabBarEvent {}
 
+class SetCountDownEvent extends BottomTabBarEvent {
+  SetCountDownEvent({required this.timeType});
+  final AutoStopTime timeType;
+}
+
 class CountDownEvent extends BottomTabBarEvent {
-  CountDownEvent({required this.second});
-  final int second;
+  CountDownEvent();
+
 }
 
 class InputLimitCountEvent extends BottomTabBarEvent {

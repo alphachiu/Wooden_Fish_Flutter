@@ -78,9 +78,10 @@ class _SettingWidgetPageState extends State<SettingWidgetPage> {
                               return value2.compareTo(value1);
                             },
                             // itemComparator: (item1, item2) =>
-                            //     item1['name'].compareTo(item2['name']),
+                            //     item1.id.compareTo(item2.id),
                             // order: GroupedListOrder.DESC,
-                            // useStickyGroupSeparators: true,
+                            sort: false,
+                            useStickyGroupSeparators: true,
                             groupSeparatorBuilder: (String value) => Container(
                               color: Color(0xFFF5F6F9),
                               child: Padding(

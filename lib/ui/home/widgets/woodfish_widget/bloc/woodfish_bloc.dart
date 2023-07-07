@@ -36,22 +36,29 @@ class WoodFishWidgetBloc
     //get autoKnockSettingInfo
     var autoKnockSetting = _woodenRepository.getAutoKnockSettingInfo();
     print('is open auto stop = ${autoKnockSetting.isAutoStop}');
-    print('autoKnockSetting.type = ${autoKnockSetting.type}');
+    print('autoKnockSetting.type = ${autoKnockSetting.autoStopType}');
     print('autoKnockSetting.limitCount = ${autoKnockSetting.limitCount}');
     print('autoKnockSetting.currentCount = ${autoKnockSetting.currentCount}');
 
-    if(autoKnockSetting.isAutoStop &&
-        autoKnockSetting.type == AutoStop.count &&
-        autoKnockSetting.limitCount != state.currentLimit){
+    // AutoStop.count
+    if (autoKnockSetting.isAutoStop &&
+        autoKnockSetting.autoStopType == AutoStop.count &&
+        autoKnockSetting.limitCount != state.currentLimit) {
       state.currentLimit = autoKnockSetting.limitCount;
       state.currentCount = 0;
     }
+
     //check return condition
     if ((autoKnockSetting.isAutoStop &&
-        autoKnockSetting.type == AutoStop.count &&
-        autoKnockSetting.limitCount == autoKnockSetting.currentCount)) {
+            autoKnockSetting.autoStopType == AutoStop.count &&
+            autoKnockSetting.limitCount == autoKnockSetting.currentCount) ||
+        (autoKnockSetting.isAutoStop &&
+            autoKnockSetting.autoStopType == AutoStop.countDown &&
+            autoKnockSetting.countDownSecond == 0)) {
+      print('meet a condition');
       return;
     }
+
     state.totalCount++;
     state.currentCount++;
 
@@ -89,16 +96,14 @@ class WoodFishWidgetBloc
     }
 
     if ((state.autoKnockSetting.isAutoStop &&
-        state.autoKnockSetting.type == AutoStop.count &&
-        state.autoKnockSetting.currentCount <= state.autoKnockSetting.limitCount)) {
-
+        state.autoKnockSetting.autoStopType == AutoStop.count &&
+        state.autoKnockSetting.currentCount <=
+            state.autoKnockSetting.limitCount)) {
       print('state.currentCount = ${state.currentCount}');
       event.btTabBar.add(CurrentCountEvent(count: state.currentCount));
-
     }
 
     emit(state.clone());
-
   }
 
   void _isAutoEvent(IsAutoEvent event, Emitter<WoodFishWidgetState> emit) {

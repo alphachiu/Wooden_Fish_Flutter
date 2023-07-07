@@ -8,10 +8,10 @@ class AutoSettingState {
   late List<SettingModel> sectionList;
   late LocalSetting setting;
   late bool isAutoStop;
-  late Map<AutoStop, Widget> autoStopSegList;
-  late Map<String, Widget> countDownSegList;
+  late Map<AutoStop, Widget> autoStopSegmentMap;
+  late Map<AutoStopTime, Widget> countDownSegmentMap;
   late AutoStop autoStopType;
-  late String countDownType;
+  late AutoStopTime countDownType;
   late AutoKnockSetting autoKnockSetting;
 
   AutoSettingState init() {
@@ -24,7 +24,7 @@ class AutoSettingState {
       ..setting = LocalSetting()
       ..autoKnockSetting = AutoKnockSetting()
       ..isAutoStop = false
-      ..autoStopSegList = {
+      ..autoStopSegmentMap = {
         AutoStop.count: const Padding(
             padding: EdgeInsets.symmetric(vertical: 10.0),
             child: Text(
@@ -36,32 +36,38 @@ class AutoSettingState {
             child: Text('倒計時',
                 style: TextStyle(color: Colors.black, fontSize: 18))),
       }
-      ..countDownSegList = {
-        '5': const Padding(
-            padding: EdgeInsets.symmetric(vertical: 10.0),
+      ..countDownSegmentMap = {
+        AutoStopTime.none: const Padding(
+            padding: EdgeInsets.symmetric(vertical: 5.0),
             child: Text(
-              '5 min',
+              '無',
               style: TextStyle(color: Colors.black, fontSize: 18),
             )),
-        '10': const Padding(
+        AutoStopTime.five: const Padding(
             padding: EdgeInsets.symmetric(vertical: 10.0),
-            child: Text('10 min',
+            child: Text(
+              '5分',
+              style: TextStyle(color: Colors.black, fontSize: 18),
+            )),
+        AutoStopTime.ten: const Padding(
+            padding: EdgeInsets.symmetric(vertical: 10.0),
+            child: Text('10分',
                 style: TextStyle(color: Colors.black, fontSize: 18))),
-        '15': const Padding(
+        AutoStopTime.fifteen: const Padding(
             padding: EdgeInsets.symmetric(vertical: 10.0),
-            child: Text('15 min',
+            child: Text('15分',
                 style: TextStyle(color: Colors.black, fontSize: 18))),
-        '30': const Padding(
+        AutoStopTime.thirty: const Padding(
             padding: EdgeInsets.symmetric(vertical: 10.0),
-            child: Text('30 min',
+            child: Text('30分',
                 style: TextStyle(color: Colors.black, fontSize: 18))),
-        '60': const Padding(
+        AutoStopTime.sixty: const Padding(
             padding: EdgeInsets.symmetric(vertical: 10.0),
-            child: Text('60 min',
+            child: Text('60分',
                 style: TextStyle(color: Colors.black, fontSize: 18))),
       }
       ..autoStopType = AutoStop.count
-      ..countDownType = '5';
+      ..countDownType = AutoStopTime.none;
   }
 
   AutoSettingState clone() {
@@ -70,8 +76,8 @@ class AutoSettingState {
       ..setting = setting
       ..autoKnockSetting = autoKnockSetting
       ..isAutoStop = isAutoStop
-      ..autoStopSegList = autoStopSegList
-      ..countDownSegList = countDownSegList
+      ..autoStopSegmentMap = autoStopSegmentMap
+      ..countDownSegmentMap = countDownSegmentMap
       ..autoStopType = autoStopType
       ..countDownType = countDownType;
   }

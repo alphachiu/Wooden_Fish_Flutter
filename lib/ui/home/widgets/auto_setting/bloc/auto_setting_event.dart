@@ -21,5 +21,5 @@ class ChangeAutoStopTypeEvent extends AutoSettingEvent {
 }
 class ChangeCountDownTypeEvent extends AutoSettingEvent {
   ChangeCountDownTypeEvent({required this.isChange});
-  final String isChange;
+  final AutoStopTime isChange;
 }

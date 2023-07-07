@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:woodenfish_bloc/repository/models/auto_knock_setting.dart';
@@ -27,6 +28,7 @@ class BottomTabBarPage extends StatefulWidget {
 
 class _BottomTabBarPageState extends State<BottomTabBarPage> {
   TabItem _currentTab = TabItem.home;
+  Timer _timer = Timer(const Duration(milliseconds: 1), () {});
 
   Map<TabItem, WidgetBuilder> get widgetBuilders {
     return {
@@ -45,6 +47,25 @@ class _BottomTabBarPageState extends State<BottomTabBarPage> {
     }
   }
 
+  void _startTimer(BottomTabBarBloc bloc) {
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      bloc.add(CountDownEvent());
+    });
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    _timer.cancel();
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
@@ -61,16 +82,37 @@ class _BottomTabBarPageState extends State<BottomTabBarPage> {
     return BlocConsumer<BottomTabBarBloc, BottomTabBarState>(
         listener: (context, state) {
       print('bottom tabbar listener');
+
+      if (state.currentAutoStopType == AutoStop.countDown) {
+        print('AutoStop.countDown');
+        print('oldCountDownType  = ${state.oldCountDownType}');
+        print('newCountDownType = ${state.newCountDownType}');
+
+        if (!state.isHiddenTip) {
+          if (_timer.isActive) {
+            _timer.cancel();
+          }
+        } else if (state.oldCountDownType != state.newCountDownType &&
+            state.newCountDownType != AutoStopTime.none) {
+          _timer.cancel();
+          _startTimer(bloc);
+        } else if (state.newCountDownType == AutoStopTime.none ||
+            state.countDownSecond == 0) {
+          if (_timer.isActive) {
+            _timer.cancel();
+          }
+        }
+      } else {
+        if (_timer.isActive) {
+          _timer.cancel();
+        }
+      }
     }, builder: (context, state) {
       return BlocBuilder<BottomTabBarBloc, BottomTabBarState>(
           builder: (context, state) {
-        print('bottom tabbar BlocBuilder');
-
         return WillPopScope(
           onWillPop: () async {
-            print('tab WillPopScope');
             navigatorKeys[_currentTab]!.currentState!.popUntil((route) {
-              print('top screen name = ${route.settings.name}');
               return true;
             });
             return false;
@@ -96,14 +138,15 @@ class _BottomTabBarPageState extends State<BottomTabBarPage> {
                                   child: Container(
                                     height: 80,
                                     color: Colors.black,
-                                    child: (state.currentType == AutoStop.count)
+                                    child: (state.currentAutoStopType ==
+                                            AutoStop.count)
                                         ? Column(
                                             mainAxisAlignment:
                                                 MainAxisAlignment.center,
                                             children: [
                                                 DefaultTextStyle(
                                                   style: const TextStyle(
-                                                      fontSize: 20,
+                                                      fontSize: 25,
                                                       fontWeight:
                                                           FontWeight.w600,
                                                       color: Colors.white),
@@ -124,7 +167,19 @@ class _BottomTabBarPageState extends State<BottomTabBarPage> {
                                                 )
                                               ])
                                         : Column(
-                                            children: [],
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              const SizedBox(
+                                                height: 10,
+                                              ),
+                                              DefaultTextStyle(
+                                                style: const TextStyle(
+                                                    fontSize: 30,
+                                                    color: Colors.white),
+                                                child: Text(state.countDownStr),
+                                              )
+                                            ],
                                           ),
                                   ),
                                 ),

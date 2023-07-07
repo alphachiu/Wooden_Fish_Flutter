@@ -90,6 +90,11 @@ class _AutoSettingPageState extends State<AutoSettingPage> {
                       return group.group;
                     },
                     indexedItemBuilder: (context, element, index) {
+                      if (state.autoKnockSetting.limitCount != 0) {
+                        controller.text =
+                            "${state.autoKnockSetting.limitCount}";
+                      }
+
                       if (index == 0) {
                         Widget thirdLayerWidget = const SizedBox();
 
@@ -107,7 +112,7 @@ class _AutoSettingPageState extends State<AutoSettingPage> {
                                 onChanged: (value) {
                                   var limitInt = value;
                                   if (value.isEmpty ||
-                                      int.parse(limitInt) < 1) {
+                                      int.parse(limitInt) <= 1) {
                                     limitInt = '1';
                                   }
                                   btBloc.add(InputLimitCountEvent(
@@ -120,18 +125,20 @@ class _AutoSettingPageState extends State<AutoSettingPage> {
                             thirdLayerWidget = Row(
                               children: [
                                 Expanded(
-                                    child: CupertinoSegmentedControl(
-                                  borderColor: Colors.transparent,
-                                  selectedColor: const Color(0xff37CACF),
-                                  unselectedColor: const Color(0xFFF0F1F3),
-                                  pressedColor: const Color(0xff37CACF),
-                                  groupValue: state.countDownType,
-                                  onValueChanged: (Object value) {
-                                    bloc.add(ChangeCountDownTypeEvent(
-                                        isChange: value as String));
-                                  },
-                                  children: state.countDownSegList,
-                                ))
+                                  child: CupertinoSlidingSegmentedControl(
+                                    padding: const EdgeInsets.all(8),
+                                    thumbColor: const Color(0xff37CACF),
+                                    backgroundColor: const Color(0xFFF0F1F3),
+                                    groupValue: state.countDownType,
+                                    onValueChanged: (value) {
+                                      bloc.add(ChangeCountDownTypeEvent(
+                                          isChange: value!));
+                                      btBloc.add(
+                                          SetCountDownEvent(timeType: value));
+                                    },
+                                    children: state.countDownSegmentMap,
+                                  ),
+                                )
                               ],
                             );
                           }
@@ -189,18 +196,19 @@ class _AutoSettingPageState extends State<AutoSettingPage> {
                                                         const Color(0xff37CACF),
                                                     backgroundColor:
                                                         const Color(0xFFF0F1F3),
-                                                    groupValue: state
-                                                        .autoStopType,
+                                                    groupValue:
+                                                        state.autoStopType,
                                                     onValueChanged: (value) {
                                                       bloc.add(
                                                           ChangeAutoStopTypeEvent(
-                                                              isChange: value!));
+                                                              isChange:
+                                                                  value!));
                                                       btBloc.add(
                                                           ChangeTypeEvent(
                                                               change: value!));
                                                     },
-                                                    children:
-                                                        state.autoStopSegList,
+                                                    children: state
+                                                        .autoStopSegmentMap,
                                                   ),
                                                 ))
                                               ],
@@ -208,7 +216,11 @@ class _AutoSettingPageState extends State<AutoSettingPage> {
                                             const SizedBox(
                                               height: 10,
                                             ),
-                                            thirdLayerWidget,
+                                            Padding(
+                                              padding: const EdgeInsets.only(
+                                                  left: 15, right: 15),
+                                              child: thirdLayerWidget,
+                                            ),
                                             const SizedBox(
                                               height: 15,
                                             ),
@@ -221,8 +233,8 @@ class _AutoSettingPageState extends State<AutoSettingPage> {
                                               bottomLeft: Radius.circular(10),
                                               bottomRight: Radius.circular(10),
                                             )),
-                                        child: const Row(
-                                          children: [
+                                        child: Row(
+                                          children: const [
                                             Expanded(
                                                 child: SizedBox(
                                               height: 10,

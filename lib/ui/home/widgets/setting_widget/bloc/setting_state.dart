@@ -9,6 +9,8 @@ class SettingWidgetState {
     return SettingWidgetState()
       ..sections = [
         SettingModel(
+            name: '個人資訊', position: SettingPosition.none, group: '個人設定'),
+        SettingModel(
             name: '變更祈福文', position: SettingPosition.none, group: '祈福文字'),
         SettingModel(
             name: '自動敲擊設置', position: SettingPosition.none, group: '播放模式'),

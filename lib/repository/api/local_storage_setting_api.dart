@@ -62,6 +62,7 @@ class LocalStorageSettingApi extends SettingAPI {
   @override
   void saveAutoKnockSetting(AutoKnockSetting setting) {
     // TODO: implement saveAutoKnockSetting
+    print('setting.autoStopTimeType = ${setting.autoStopTimeType}');
     autoSetting = setting;
   }
 }

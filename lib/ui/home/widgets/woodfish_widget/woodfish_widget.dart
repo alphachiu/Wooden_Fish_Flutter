@@ -1,19 +1,10 @@
 import 'dart:async';
 
-import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:woodenfish_bloc/repository/models/auto_knock_setting.dart';
 import 'package:woodenfish_bloc/repository/wooden_repository.dart';
-import 'package:woodenfish_bloc/ui/home/page/bottom_tabbar.dart';
 import 'package:woodenfish_bloc/ui/home/page/bottom_tabbar/bloc/bottom_tabbar_bloc.dart';
-import 'package:woodenfish_bloc/ui/home/page/bottom_tabbar/bloc/bottom_tabbar_event.dart';
-import 'package:woodenfish_bloc/ui/home/widgets/setting_widget/bloc/setting_bloc.dart';
-import 'package:woodenfish_bloc/ui/home/widgets/setting_widget/bloc/setting_state.dart';
-import 'package:woodenfish_bloc/ui/home/widgets/woodfish_widget/knock_text_widget.dart';
-import 'package:woodenfish_bloc/utils/AudioPlayUtil.dart';
 
 import 'bloc/woodfish_bloc.dart';
 import 'bloc/woodfish_event.dart';
@@ -37,7 +28,7 @@ class _Woodfish_windgePageState extends State<Woodfish_widgetPage>
     super.initState();
   }
 
-  void startAuto(WoodFishWidgetBloc bloc,BottomTabBarBloc btTabBar) {
+  void startTimer(WoodFishWidgetBloc bloc, BottomTabBarBloc btTabBar) {
     autoKnockTimer =
         Timer.periodic(Duration(milliseconds: milliseconds * 1000), (timer) {
       bloc.add(IncrementEvent(btTabBar: btTabBar));
@@ -83,7 +74,7 @@ class _Woodfish_windgePageState extends State<Woodfish_widgetPage>
                   milliseconds != state.setting.autoSpeed.toInt()) {
                 milliseconds = state.setting.autoSpeed.toInt();
                 stopAuto();
-                startAuto(bloc,btBloc);
+                startTimer(bloc, btBloc);
               }
 
               return BlocBuilder<WoodFishWidgetBloc, WoodFishWidgetState>(
@@ -119,10 +110,11 @@ class _Woodfish_windgePageState extends State<Woodfish_widgetPage>
                                 ),
                                 Row(
                                   children: [
-                                    Text(state.isAuto ? '自動' : '手動',
-                                        style: TextStyle(fontSize: 20.0)),
+                                    Text(state.isAuto ? '手動' : '自動',
+                                        style: const TextStyle(fontSize: 20.0)),
                                     Switch.adaptive(
                                         value: state.isAuto,
+                                        activeColor: const Color(0xff37CACF),
                                         onChanged: (isChange) {
                                           bloc.add(
                                               IsAutoEvent(isAuto: isChange));
@@ -130,7 +122,7 @@ class _Woodfish_windgePageState extends State<Woodfish_widgetPage>
                                           if (!isChange) {
                                             stopAuto();
                                           } else {
-                                            startAuto(bloc,btBloc);
+                                            startTimer(bloc, btBloc);
                                           }
                                         }),
                                     const SizedBox(
@@ -147,9 +139,7 @@ class _Woodfish_windgePageState extends State<Woodfish_widgetPage>
                               highlightColor: Colors.transparent,
                               splashColor: Colors.transparent,
                               onTap: () async {
-
-                                  bloc.add(IncrementEvent(btTabBar: btBloc));
-
+                                bloc.add(IncrementEvent(btTabBar: btBloc));
                               },
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,

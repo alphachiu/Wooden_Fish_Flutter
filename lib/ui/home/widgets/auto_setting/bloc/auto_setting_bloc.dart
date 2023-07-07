@@ -19,10 +19,13 @@ class AutoSettingBloc extends Bloc<AutoSettingEvent, AutoSettingState> {
   final WoodenRepository _woodenRepository;
 
   void _init(InitEvent event, Emitter<AutoSettingState> emit) async {
-    state.setting = _woodenRepository.getSetting();
-    state.isAutoStop = _woodenRepository.getAutoKnockSettingInfo().isAutoStop;
-    state.autoStopType = _woodenRepository.getAutoKnockSettingInfo().type;
+    var getAutoKnockSettingInfo = _woodenRepository.getAutoKnockSettingInfo();
 
+    state.setting = _woodenRepository.getSetting();
+    state.isAutoStop = getAutoKnockSettingInfo.isAutoStop;
+    state.autoStopType = getAutoKnockSettingInfo.autoStopType;
+    state.countDownType = getAutoKnockSettingInfo.autoStopTimeType;
+    state.autoKnockSetting = getAutoKnockSettingInfo;
     emit(state.clone());
   }
 
@@ -33,25 +36,43 @@ class AutoSettingBloc extends Bloc<AutoSettingEvent, AutoSettingState> {
     emit(state.clone());
   }
 
+  // switch on / off
   void _switchAutoStop(
       SwitchAutoStopEvent event, Emitter<AutoSettingState> emit) async {
     state.isAutoStop = event.isChange;
     state.autoKnockSetting.isAutoStop = event.isChange;
+
+    if (event.isChange) {
+      state.autoKnockSetting.autoStopTimeType = AutoStopTime.none;
+      state.autoKnockSetting.autoStopType = AutoStop.count;
+      state.autoKnockSetting.limitCount = 0;
+      state.autoKnockSetting.currentCount = 0;
+      state.autoKnockSetting.countDownSecond = 0;
+
+      state.autoStopType = AutoStop.count;
+      state.countDownType = AutoStopTime.none;
+    }
+
+    _woodenRepository.saveAutoKnockSetting(state.autoKnockSetting);
     emit(state.clone());
   }
 
-  void _changeAutoStopType(ChangeAutoStopTypeEvent event,
-      Emitter<AutoSettingState> emit) async {
+  //change count / countDown
+  void _changeAutoStopType(
+      ChangeAutoStopTypeEvent event, Emitter<AutoSettingState> emit) async {
     state.autoStopType = event.isChange;
-    state.autoKnockSetting.type = event.isChange;
+    state.autoKnockSetting.autoStopType = event.isChange;
+    state.countDownType = AutoStopTime.none;
     print('_changeAutoStopType event.isChange = ${event.isChange}');
     _woodenRepository.saveAutoKnockSetting(state.autoKnockSetting);
     emit(state.clone());
   }
 
-  void _changeCountDownType(ChangeCountDownTypeEvent event,
-      Emitter<AutoSettingState> emit) async {
+  void _changeCountDownType(
+      ChangeCountDownTypeEvent event, Emitter<AutoSettingState> emit) async {
     state.countDownType = event.isChange;
+    state.autoKnockSetting.autoStopTimeType = event.isChange;
+    _woodenRepository.saveAutoKnockSetting(state.autoKnockSetting);
 
     emit(state.clone());
   }
