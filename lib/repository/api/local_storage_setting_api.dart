@@ -5,6 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:woodenfish_bloc/repository/api/setting_api.dart';
 import 'package:woodenfish_bloc/repository/models/Local_setting.dart';
 import 'package:woodenfish_bloc/repository/models/auto_knock_setting.dart';
+import 'package:woodenfish_bloc/repository/models/setting_model.dart';
 
 class LocalStorageSettingApi extends SettingAPI {
   LocalStorageSettingApi({required SharedPreferences plugin})
@@ -64,5 +65,15 @@ class LocalStorageSettingApi extends SettingAPI {
     // TODO: implement saveAutoKnockSetting
     print('setting.autoStopTimeType = ${setting.autoStopTimeType}');
     autoSetting = setting;
+  }
+
+  @override
+  BgElement? getBgElementFromString(String bgElement) {
+    for (BgElement element in BgElement.values) {
+      if (element.toString() == bgElement) {
+        return element;
+      }
+    }
+    return null;
   }
 }

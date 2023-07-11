@@ -10,14 +10,14 @@ import 'bloc/woodfish_bloc.dart';
 import 'bloc/woodfish_event.dart';
 import 'bloc/woodfish_state.dart';
 
-class Woodfish_widgetPage extends StatefulWidget {
-  const Woodfish_widgetPage({Key? key}) : super(key: key);
+class WoodFishWidgetPage extends StatefulWidget {
+  const WoodFishWidgetPage({Key? key}) : super(key: key);
 
   @override
-  State<Woodfish_widgetPage> createState() => _Woodfish_windgePageState();
+  State<WoodFishWidgetPage> createState() => _WoodFishWidgetPageState();
 }
 
-class _Woodfish_windgePageState extends State<Woodfish_widgetPage>
+class _WoodFishWidgetPageState extends State<WoodFishWidgetPage>
     with SingleTickerProviderStateMixin {
   late Timer autoKnockTimer;
   late int milliseconds = 500;
@@ -51,7 +51,7 @@ class _Woodfish_windgePageState extends State<Woodfish_widgetPage>
     return BlocProvider(
       create: (BuildContext context) => WoodFishWidgetBloc(
           woodenRepository: RepositoryProvider.of<WoodenRepository>(context))
-        ..add(InitEvent()),
+        ..add(WoodenFishInitEvent()),
       child: Builder(builder: (context) => _buildPage(context)),
     );
   }
@@ -61,116 +61,115 @@ class _Woodfish_windgePageState extends State<Woodfish_widgetPage>
     final btBloc = BlocProvider.of<BottomTabBarBloc>(context);
     print("home parant");
 
-    return Container(
-      color: Colors.white,
-      child: SafeArea(
-        child: Scaffold(
-            backgroundColor: Colors.white,
-            body: BlocConsumer<WoodFishWidgetBloc, WoodFishWidgetState>(
-                listener: (context, state) {
-              print('Wood fish listener');
-            }, builder: (context, state) {
-              if (state.isAuto &&
-                  milliseconds != state.setting.autoSpeed.toInt()) {
-                milliseconds = state.setting.autoSpeed.toInt();
-                stopAuto();
-                startTimer(bloc, btBloc);
-              }
+    return BlocConsumer<WoodFishWidgetBloc, WoodFishWidgetState>(
+        listener: (context, state) {
+      print('Wood fish listener');
+    }, builder: (context, state) {
+      if (state.isAuto && milliseconds != state.setting.autoSpeed.toInt()) {
+        milliseconds = state.setting.autoSpeed.toInt();
+        stopAuto();
+        startTimer(bloc, btBloc);
+      }
 
-              return BlocBuilder<WoodFishWidgetBloc, WoodFishWidgetState>(
-                builder: (context, state) {
-                  return Stack(
-                    children: [
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Expanded(
-                            flex: 1,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  children: [
-                                    const SizedBox(
-                                      width: 20,
-                                    ),
-                                    Column(
-                                      children: [
-                                        const SizedBox(
-                                          height: 10,
-                                        ),
-                                        Text(
-                                          '累積敲${state.totalCount}次',
-                                          style: TextStyle(fontSize: 20.0),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                                Row(
-                                  children: [
-                                    Text(state.isAuto ? '手動' : '自動',
-                                        style: const TextStyle(fontSize: 20.0)),
-                                    Switch.adaptive(
-                                        value: state.isAuto,
-                                        activeColor: const Color(0xff37CACF),
-                                        onChanged: (isChange) {
-                                          bloc.add(
-                                              IsAutoEvent(isAuto: isChange));
-                                          //milliseconds += 2000;
-                                          if (!isChange) {
-                                            stopAuto();
-                                          } else {
-                                            startTimer(bloc, btBloc);
-                                          }
-                                        }),
-                                    const SizedBox(
-                                      width: 10,
-                                    ),
-                                  ],
-                                )
-                              ],
-                            ),
-                          ), //MediaQuery.of(context).size.height
-                          Expanded(
-                            flex: 1,
-                            child: InkWell(
-                              highlightColor: Colors.transparent,
-                              splashColor: Colors.transparent,
-                              onTap: () async {
-                                bloc.add(IncrementEvent(btTabBar: btBloc));
-                              },
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.start,
+      return BlocBuilder<WoodFishWidgetBloc, WoodFishWidgetState>(
+        builder: (context, state) {
+          print('wooden fish BlocBuilder');
+          return Container(
+            color: state.bgColor,
+            child: SafeArea(
+              child: Scaffold(
+                backgroundColor: state.bgColor,
+                body: Stack(
+                  children: [
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          flex: 1,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
                                 children: [
-                                  Stack(
+                                  const SizedBox(
+                                    width: 20,
+                                  ),
+                                  Column(
                                     children: [
-                                      Stack(
-                                          children:
-                                              state.knockAnimationWidgets),
-                                      const Image(
-                                        image: AssetImage(
-                                            'assets/images/wooden-fish.png'),
-                                        width: 250,
-                                        height: 250,
+                                      const SizedBox(
+                                        height: 10,
+                                      ),
+                                      Text(
+                                        '累積敲${state.totalCount}次',
+                                        style: TextStyle(fontSize: 20.0),
                                       ),
                                     ],
                                   ),
                                 ],
                               ),
+                              Row(
+                                children: [
+                                  Text(state.isAuto ? '手動' : '自動',
+                                      style: const TextStyle(fontSize: 20.0)),
+                                  Switch.adaptive(
+                                      value: state.isAuto,
+                                      activeColor: const Color(0xff37CACF),
+                                      onChanged: (isChange) {
+                                        bloc.add(IsAutoEvent(isAuto: isChange));
+                                        //milliseconds += 2000;
+                                        if (!isChange) {
+                                          stopAuto();
+                                        } else {
+                                          startTimer(bloc, btBloc);
+                                        }
+                                      }),
+                                  const SizedBox(
+                                    width: 10,
+                                  ),
+                                ],
+                              )
+                            ],
+                          ),
+                        ), //MediaQuery.of(context).size.height
+                        Expanded(
+                          flex: 1,
+                          child: InkWell(
+                            highlightColor: Colors.transparent,
+                            splashColor: Colors.transparent,
+                            onTap: () async {
+                              bloc.add(IncrementEvent(btTabBar: btBloc));
+                            },
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Stack(
+                                  children: [
+                                    Stack(
+                                        children: state.knockAnimationWidgets),
+                                    const Image(
+                                      image: AssetImage(
+                                          'assets/images/wooden-fish.png'),
+                                      width: 250,
+                                      height: 250,
+                                    ),
+                                  ],
+                                ),
+                              ],
                             ),
                           ),
-                        ],
-                      ),
-                    ],
-                  );
-                },
-              );
-            })),
-      ),
-    );
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        },
+      );
+    });
   }
 }
 

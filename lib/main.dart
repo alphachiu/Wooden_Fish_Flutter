@@ -37,10 +37,6 @@ class MyApp extends StatelessWidget {
               create: (BuildContext context) => WoodFishWidgetBloc(
                   woodenRepository:
                       RepositoryProvider.of<WoodenRepository>(context))),
-          BlocProvider<BottomTabBarBloc>(
-              create: (BuildContext context) => BottomTabBarBloc(
-                  woodenRepository:
-                      RepositoryProvider.of<WoodenRepository>(context))),
         ], child: const BottomTabBarPage()),
       ),
     );

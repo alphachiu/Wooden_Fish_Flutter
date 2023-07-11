@@ -32,7 +32,7 @@ class _BottomTabBarPageState extends State<BottomTabBarPage> {
 
   Map<TabItem, WidgetBuilder> get widgetBuilders {
     return {
-      TabItem.home: (_) => Woodfish_widgetPage(),
+      TabItem.home: (_) => WoodFishWidgetPage(),
       TabItem.setting: (_) => SettingWidgetPage(),
     };
   }

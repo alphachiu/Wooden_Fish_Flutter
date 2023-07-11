@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:woodenfish_bloc/repository/models/auto_knock_setting.dart';
+import 'package:woodenfish_bloc/repository/models/setting_model.dart';
 import 'package:woodenfish_bloc/repository/wooden_repository.dart';
 import 'package:woodenfish_bloc/ui/home/page/bottom_tabbar/bloc/bottom_tabbar_event.dart';
 import 'package:woodenfish_bloc/ui/home/widgets/woodfish_widget/knock_text_widget.dart';
@@ -17,17 +18,48 @@ class WoodFishWidgetBloc
   WoodFishWidgetBloc({required WoodenRepository woodenRepository})
       : _woodenRepository = woodenRepository,
         super(WoodFishWidgetState().init()) {
-    on<InitEvent>(_init);
+    on<WoodenFishInitEvent>(_init);
     on<IncrementEvent>(_increment);
     on<IsAutoEvent>(_isAutoEvent);
+    on<ChangBgEvent>(_changeBg);
   }
 
   final WoodenRepository _woodenRepository;
   final List<Widget> _knockAnimationWidgets = [];
   late Timer autoKnockTimer;
 
-  void _init(InitEvent event, Emitter<WoodFishWidgetState> emit) async {
+  void _init(
+      WoodenFishInitEvent event, Emitter<WoodFishWidgetState> emit) async {
     state.setting = _woodenRepository.getSetting();
+
+    switch (
+        _woodenRepository.getBgElementFromString(state.setting.woodenFishBg)) {
+      case BgElement.none:
+        state.bgColor = Colors.white;
+        break;
+      case BgElement.red:
+        state.bgColor = Colors.red;
+        break;
+      case BgElement.orange:
+        state.bgColor = Colors.orange;
+        break;
+      case BgElement.green:
+        state.bgColor = Colors.green;
+        break;
+      case BgElement.yellow:
+        state.bgColor = Colors.yellow;
+        break;
+      case BgElement.blue:
+        state.bgColor = Colors.blue;
+        break;
+      case BgElement.indigo:
+        state.bgColor = Colors.indigo;
+        break;
+      case BgElement.purple:
+        state.bgColor = Colors.purple;
+        break;
+    }
+
     emit(state.clone());
   }
 
@@ -109,6 +141,39 @@ class WoodFishWidgetBloc
   void _isAutoEvent(IsAutoEvent event, Emitter<WoodFishWidgetState> emit) {
     state.isAuto = event.isAuto;
 
+    emit(state.clone());
+  }
+
+  void _changeBg(ChangBgEvent event, Emitter<WoodFishWidgetState> emit) {
+    print('wooden _changeBg');
+    state.setting = _woodenRepository.getSetting();
+
+    switch (event.bgElement) {
+      case BgElement.none:
+        state.bgColor = Colors.white;
+        break;
+      case BgElement.red:
+        state.bgColor = Colors.red;
+        break;
+      case BgElement.orange:
+        state.bgColor = Colors.orange;
+        break;
+      case BgElement.green:
+        state.bgColor = Colors.green;
+        break;
+      case BgElement.yellow:
+        state.bgColor = Colors.yellow;
+        break;
+      case BgElement.blue:
+        state.bgColor = Colors.blue;
+        break;
+      case BgElement.indigo:
+        state.bgColor = Colors.indigo;
+        break;
+      case BgElement.purple:
+        state.bgColor = Colors.purple;
+        break;
+    }
     emit(state.clone());
   }
 

@@ -10,6 +10,7 @@ class WoodFishWidgetState {
   late LocalSetting setting;
   late AutoKnockSetting autoKnockSetting;
   late int currentLimit;
+  late Color bgColor;
 
   WoodFishWidgetState init() {
     return WoodFishWidgetState()
@@ -19,7 +20,9 @@ class WoodFishWidgetState {
       ..knockAnimationWidgets = []
       ..isAuto = false
       ..setting = LocalSetting()
-      ..autoKnockSetting = AutoKnockSetting();
+      ..autoKnockSetting = AutoKnockSetting()
+      ..bgColor = Colors.white
+    ;
   }
 
   WoodFishWidgetState clone() {
@@ -30,6 +33,8 @@ class WoodFishWidgetState {
       ..knockAnimationWidgets = knockAnimationWidgets
       ..isAuto = isAuto
       ..setting = setting
-      ..autoKnockSetting = autoKnockSetting;
+      ..autoKnockSetting = autoKnockSetting
+      ..bgColor = bgColor
+    ;
   }
 }

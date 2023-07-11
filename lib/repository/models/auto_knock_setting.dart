@@ -1,3 +1,7 @@
+import 'dart:ui';
+import 'package:flutter/material.dart';
+import 'package:woodenfish_bloc/repository/models/setting_model.dart';
+
 enum AutoStop { count, countDown }
 
 enum AutoStopTime { none, five, ten, fifteen, thirty, sixty }
@@ -9,7 +13,9 @@ class AutoKnockSetting {
       this.autoStopTimeType = AutoStopTime.none,
       this.limitCount = 0,
       this.currentCount = 0,
-      this.countDownSecond = 0});
+      this.countDownSecond = 0,
+
+      });
 
   bool isAutoStop;
   AutoStop autoStopType;

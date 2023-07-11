@@ -101,7 +101,7 @@ class _SettingWidgetPageState extends State<SettingWidgetPage> {
                               return group.group;
                             },
                             indexedItemBuilder: (context, element, index) {
-                              var settingModel = element as SettingModel;
+                              var settingModel = element as GroupListModel;
 
                               if (settingModel.position ==
                                   SettingPosition.head) {
@@ -187,7 +187,11 @@ class _SettingWidgetPageState extends State<SettingWidgetPage> {
                                           } else if (settingModel.name ==
                                               "自動敲擊設置") {
                                             Navigator.pushNamed(context,
-                                                RoutePaths.auto_setting);
+                                                RoutePaths.autoSetting);
+                                          } else if (settingModel.name ==
+                                              "個人設定") {
+                                            Navigator.pushNamed(
+                                                context, RoutePaths.personInfo);
                                           }
                                         },
                                       )),

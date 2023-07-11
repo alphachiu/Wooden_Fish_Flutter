@@ -1,6 +1,7 @@
 import 'package:woodenfish_bloc/repository/api/setting_api.dart';
 import 'package:woodenfish_bloc/repository/models/Local_setting.dart';
 import 'package:woodenfish_bloc/repository/models/auto_knock_setting.dart';
+import 'package:woodenfish_bloc/repository/models/setting_model.dart';
 
 class WoodenRepository {
   const WoodenRepository({required SettingAPI woodenApi})
@@ -19,4 +20,7 @@ class WoodenRepository {
       _settingAPI.getAutoKnockSettingInfo();
   void saveAutoKnockSetting(AutoKnockSetting setting) =>
       _settingAPI.saveAutoKnockSetting(setting);
+
+  BgElement? getBgElementFromString(String bgElement) =>
+      _settingAPI.getBgElementFromString(bgElement);
 }

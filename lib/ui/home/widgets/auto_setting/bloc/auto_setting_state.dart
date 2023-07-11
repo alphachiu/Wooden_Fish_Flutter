@@ -5,7 +5,7 @@ import 'package:woodenfish_bloc/repository/models/auto_knock_setting.dart';
 import 'package:woodenfish_bloc/repository/models/setting_model.dart';
 
 class AutoSettingState {
-  late List<SettingModel> sectionList;
+  late List<GroupListModel> sectionList;
   late LocalSetting setting;
   late bool isAutoStop;
   late Map<AutoStop, Widget> autoStopSegmentMap;
@@ -17,9 +17,10 @@ class AutoSettingState {
   AutoSettingState init() {
     return AutoSettingState()
       ..sectionList = [
-        SettingModel(
+        GroupListModel(
             name: '自動停止', position: SettingPosition.none, group: '停止模式'),
-        SettingModel(name: '間隔', position: SettingPosition.none, group: '敲擊間隔'),
+        GroupListModel(
+            name: '間隔', position: SettingPosition.none, group: '敲擊間隔'),
       ]
       ..setting = LocalSetting()
       ..autoKnockSetting = AutoKnockSetting()
