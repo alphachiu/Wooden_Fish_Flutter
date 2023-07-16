@@ -25,7 +25,7 @@ class PersonInfoPage extends StatelessWidget {
 
   Widget _buildPage(BuildContext context) {
     final bloc = BlocProvider.of<PersonInfoBloc>(context);
-   final woodenFishBloc = BlocProvider.of<WoodFishWidgetBloc>(context);
+   final woodenFishBloc = context.read<WoodFishWidgetBloc>();
 
     return Container(
       color: Colors.white,
@@ -103,9 +103,7 @@ class PersonInfoPage extends StatelessWidget {
                                             bloc.add(SelectBgEvent(
                                                 currentBg: gridsElement[index]
                                                     .bgName));
-                                            woodenFishBloc.add(ChangBgEvent(
-                                                bgElement: gridsElement[index]
-                                                    .bgName));
+                                            woodenFishBloc.add(ChangBgEvent());
                                           },
                                           child: Container(
                                               width: 50,

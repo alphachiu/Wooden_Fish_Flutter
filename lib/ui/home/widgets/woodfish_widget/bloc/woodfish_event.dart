@@ -24,7 +24,5 @@ class IsDisplayEvent extends WoodFishWidgetEvent {
 }
 
 class ChangBgEvent extends WoodFishWidgetEvent {
-  ChangBgEvent({required this.bgElement});
 
-  final BgElement bgElement;
 }

@@ -34,7 +34,7 @@ class CupertinoHomeScaffold extends StatelessWidget {
         print('tabBuilder item = ${item}');
         return CupertinoTabView(
           navigatorKey: navigatorKeys[item],
-          builder: (context) => widgetBuilders[item]!(context),
+          builder: (_) => widgetBuilders[item]!(context),
           onGenerateRoute: routers.Router.generateRoute,
         );
       },

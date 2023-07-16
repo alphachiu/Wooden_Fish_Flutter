@@ -3,8 +3,13 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:vitality/models/ItemBehaviour.dart';
+import 'package:vitality/models/WhenOutOfScreenMode.dart';
+import 'package:vitality/vitality.dart';
 import 'package:woodenfish_bloc/repository/wooden_repository.dart';
+import 'package:woodenfish_bloc/ui/custom_bg/custom_bg_main.dart';
 import 'package:woodenfish_bloc/ui/home/page/bottom_tabbar/bloc/bottom_tabbar_bloc.dart';
+import 'package:woodenfish_bloc/utils/wooden_fish_util.dart';
 
 import 'bloc/woodfish_bloc.dart';
 import 'bloc/woodfish_event.dart';
@@ -49,6 +54,7 @@ class _WoodFishWidgetPageState extends State<WoodFishWidgetPage>
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
+
       create: (BuildContext context) => WoodFishWidgetBloc(
           woodenRepository: RepositoryProvider.of<WoodenRepository>(context))
         ..add(WoodenFishInitEvent()),
@@ -74,96 +80,120 @@ class _WoodFishWidgetPageState extends State<WoodFishWidgetPage>
       return BlocBuilder<WoodFishWidgetBloc, WoodFishWidgetState>(
         builder: (context, state) {
           print('wooden fish BlocBuilder');
-          return Container(
-            color: state.bgColor,
-            child: SafeArea(
-              child: Scaffold(
-                backgroundColor: state.bgColor,
-                body: Stack(
-                  children: [
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Expanded(
-                          flex: 1,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                children: [
-                                  const SizedBox(
-                                    width: 20,
-                                  ),
-                                  Column(
-                                    children: [
-                                      const SizedBox(
-                                        height: 10,
-                                      ),
-                                      Text(
-                                        '累積敲${state.totalCount}次',
-                                        style: TextStyle(fontSize: 20.0),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                              Row(
-                                children: [
-                                  Text(state.isAuto ? '手動' : '自動',
-                                      style: const TextStyle(fontSize: 20.0)),
-                                  Switch.adaptive(
-                                      value: state.isAuto,
-                                      activeColor: const Color(0xff37CACF),
-                                      onChanged: (isChange) {
-                                        bloc.add(IsAutoEvent(isAuto: isChange));
-                                        //milliseconds += 2000;
-                                        if (!isChange) {
-                                          stopAuto();
-                                        } else {
-                                          startTimer(bloc, btBloc);
-                                        }
-                                      }),
-                                  const SizedBox(
-                                    width: 10,
-                                  ),
-                                ],
-                              )
-                            ],
-                          ),
-                        ), //MediaQuery.of(context).size.height
-                        Expanded(
-                          flex: 1,
-                          child: InkWell(
-                            highlightColor: Colors.transparent,
-                            splashColor: Colors.transparent,
-                            onTap: () async {
-                              bloc.add(IncrementEvent(btTabBar: btBloc));
-                            },
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.start,
+
+          state.bgColor = WoodenFishUtil.internal().getColorFromString(state.setting.woodenFishBg);
+          Size size = MediaQuery.of(context).size;
+          return Scaffold(
+            backgroundColor: state.bgColor,
+            body: SizedBox(
+              width: double.infinity,
+              height:double.infinity,
+              child: Stack(
+                children: [
+
+                // CustomBgMain(),
+                //   Vitality.randomly(
+                //     height: size.height,
+                //     width: size.width,
+                //     background: Colors.black,
+                //     maxOpacity: 0.8,
+                //     minOpacity: 0.3,
+                //     itemsCount: 80,
+                //     enableXMovements: false,
+                //     whenOutOfScreenMode: WhenOutOfScreenMode.Teleport,
+                //     maxSpeed: 1.5,
+                //     maxSize: 30,
+                //     minSpeed: 0.5,
+                //     randomItemsColors: [Colors.yellowAccent, Colors.white],
+                //     randomItemsBehaviours: [
+                //       ItemBehaviour(shape: ShapeType.Icon, icon: Icons.star),
+                //       ItemBehaviour(shape: ShapeType.Icon, icon: Icons.star_border),
+                //       ItemBehaviour(shape: ShapeType.StrokeCircle),
+                //     ],
+                //   ),
+
+                  SafeArea(child:  Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        flex: 1,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
                               children: [
-                                Stack(
+                                const SizedBox(
+                                  width: 20,
+                                ),
+                                Column(
                                   children: [
-                                    Stack(
-                                        children: state.knockAnimationWidgets),
-                                    const Image(
-                                      image: AssetImage(
-                                          'assets/images/wooden-fish.png'),
-                                      width: 250,
-                                      height: 250,
+                                    const SizedBox(
+                                      height: 10,
+                                    ),
+                                    Text(
+                                      '累積敲${state.totalCount}次',
+                                      style: TextStyle(fontSize: 20.0),
                                     ),
                                   ],
                                 ),
                               ],
                             ),
+                            Row(
+                              children: [
+                                Text(state.isAuto ? '手動' : '自動',
+                                    style: const TextStyle(fontSize: 20.0)),
+                                Switch.adaptive(
+                                    value: state.isAuto,
+                                    activeColor: const Color(0xff37CACF),
+                                    onChanged: (isChange) {
+                                      bloc.add(IsAutoEvent(isAuto: isChange));
+                                      //milliseconds += 2000;
+                                      if (!isChange) {
+                                        stopAuto();
+                                      } else {
+                                        startTimer(bloc, btBloc);
+                                      }
+                                    }),
+                                const SizedBox(
+                                  width: 10,
+                                ),
+                              ],
+                            )
+                          ],
+                        ),
+                      ), //MediaQuery.of(context).size.height
+                      Expanded(
+                        flex: 1,
+                        child: InkWell(
+                          highlightColor: Colors.transparent,
+                          splashColor: Colors.transparent,
+                          onTap: () async {
+                            bloc.add(IncrementEvent(btTabBar: btBloc));
+                          },
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Stack(
+                                children: [
+                                  Stack(
+                                      children: state.knockAnimationWidgets),
+                                  const Image(
+                                    image: AssetImage(
+                                        'assets/images/wooden-fish.png'),
+                                    width: 250,
+                                    height: 250,
+                                  ),
+                                ],
+                              ),
+                            ],
                           ),
                         ),
-                      ],
-                    ),
-                  ],
-                ),
+                      ),
+                    ],
+                  ),)
+                ],
               ),
             ),
           );

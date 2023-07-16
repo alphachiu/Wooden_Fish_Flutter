@@ -3,6 +3,7 @@ import 'dart:ui';
 enum SettingPosition { head, mid, end, none }
 
 enum BgElement { none, red, orange, yellow, green, blue, indigo, purple }
+enum WoodenFishElement { wood, red, orange, yellow, green, blue, indigo, purple }
 
 class GroupListModel {
   GroupListModel(
