@@ -13,7 +13,7 @@ class LocalSetting {
       this.autoSpeed = 0.5,
       this.woodenFishBg = "WoodenFishBgElement.none",
       this.woodenFishSkin = "WoodenFishSkinElement.wood",
-      this.woodenFishSound = "woodenFish_sound_01.wav",
+      this.woodenFishSound = "WoodenFishSoundElement.sound01",
       this.isSetPrayPhoto = false});
 
   bool isDisplay; //display pray word

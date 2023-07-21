@@ -178,7 +178,7 @@ class WoodenFishUtil {
 
   String getSoundNameFromString(String soundName) {
     String? soundNameStr;
-
+     print('soundName = ${soundName}');
     for (WoodenFishSoundElement element in WoodenFishSoundElement.values) {
       if (element.toString() == soundName) {
         switch (element) {
