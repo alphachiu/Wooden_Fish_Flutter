@@ -1,6 +1,11 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:woodenfish_bloc/repository/models/Local_setting.dart';
 import 'package:woodenfish_bloc/repository/models/auto_knock_setting.dart';
+import 'package:woodenfish_bloc/utils/wooden_fish_util.dart';
+
+enum PrayPhotoLoadStatus { init, loading, fail, finish }
 
 class WoodFishWidgetState {
   late int totalCount;
@@ -11,6 +16,10 @@ class WoodFishWidgetState {
   late AutoKnockSetting autoKnockSetting;
   late int currentLimit;
   late Color bgColor;
+  late Image wfSkin;
+  late String prayPhotoName;
+  late Image prayPhoto;
+  late PrayPhotoLoadStatus isPhotoLoading;
 
   WoodFishWidgetState init() {
     return WoodFishWidgetState()
@@ -22,7 +31,15 @@ class WoodFishWidgetState {
       ..setting = LocalSetting()
       ..autoKnockSetting = AutoKnockSetting()
       ..bgColor = Colors.white
-    ;
+      ..wfSkin = WoodenFishUtil.internal()
+          .getSkinImageFromString('WoodenFishSkinElement.wood')
+      ..prayPhoto = const Image(
+        image: AssetImage('assets/images/user_Icon.png'),
+        width: 200,
+        height: 200,
+      )
+      ..prayPhotoName = 'prayAvatarPhoto.png'
+      ..isPhotoLoading = PrayPhotoLoadStatus.init;
   }
 
   WoodFishWidgetState clone() {
@@ -35,6 +52,9 @@ class WoodFishWidgetState {
       ..setting = setting
       ..autoKnockSetting = autoKnockSetting
       ..bgColor = bgColor
-    ;
+      ..wfSkin = wfSkin
+      ..prayPhoto = prayPhoto
+      ..prayPhotoName = prayPhotoName
+      ..isPhotoLoading = isPhotoLoading;
   }
 }

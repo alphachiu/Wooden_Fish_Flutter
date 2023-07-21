@@ -23,6 +23,6 @@ class IsDisplayEvent extends WoodFishWidgetEvent {
   final bool isDisplay;
 }
 
-class ChangBgEvent extends WoodFishWidgetEvent {
+class ChangWoodenFishStateEvent extends WoodFishWidgetEvent {}
 
-}
+class SavePrayAvatarEvent extends WoodFishWidgetEvent {}

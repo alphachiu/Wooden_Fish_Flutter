@@ -12,7 +12,7 @@ class WoodenRepository {
   Future<void> saveSetting(LocalSetting setting) =>
       _settingAPI.saveInfo(setting);
 
-  LocalSetting getSetting() => _settingAPI.getInfo();
+  LocalSetting getSetting() => _settingAPI.getSettingInfo();
 
   Future<void> deleteSetting() => _settingAPI.deleteSettingInfo();
 
@@ -20,7 +20,4 @@ class WoodenRepository {
       _settingAPI.getAutoKnockSettingInfo();
   void saveAutoKnockSetting(AutoKnockSetting setting) =>
       _settingAPI.saveAutoKnockSetting(setting);
-
-  BgElement? getBgElementFromString(String bgElement) =>
-      _settingAPI.getBgElementFromString(bgElement);
 }

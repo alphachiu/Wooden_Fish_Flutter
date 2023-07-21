@@ -83,7 +83,7 @@ class _SettingWidgetPageState extends State<SettingWidgetPage> {
                             sort: false,
                             useStickyGroupSeparators: true,
                             groupSeparatorBuilder: (String value) => Container(
-                              color: Color(0xFFF5F6F9),
+                              color: const Color(0xFFF5F6F9),
                               child: Padding(
                                 padding: const EdgeInsets.only(
                                     left: 30, right: 20, bottom: 10, top: 10),
@@ -189,7 +189,7 @@ class _SettingWidgetPageState extends State<SettingWidgetPage> {
                                             Navigator.pushNamed(context,
                                                 RoutePaths.autoSetting);
                                           } else if (settingModel.name ==
-                                              "個人設定") {
+                                              "佈景設置") {
                                             Navigator.pushNamed(
                                                 context, RoutePaths.personInfo);
                                           }

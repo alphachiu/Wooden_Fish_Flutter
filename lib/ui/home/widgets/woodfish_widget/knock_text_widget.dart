@@ -4,9 +4,10 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 
 class KnockTextWidget extends StatefulWidget {
-  KnockTextWidget({Key? key, this.onRemove, this.childWidget}) : super(key: key);
+  KnockTextWidget({Key? key, this.onRemove, this.childWidget})
+      : super(key: key);
 
-  Widget? childWidget ;
+  Widget? childWidget;
   Function(KnockTextWidget knock)? onRemove;
 
   @override
@@ -23,10 +24,9 @@ class _KnockTextWidgetState extends State<KnockTextWidget>
   void initState() {
     super.initState();
 
-
     _animationController = AnimationController(
       vsync: this,
-      duration: Duration(seconds: 1),
+      duration: const Duration(seconds: 5),
     );
 
     _animation =
@@ -36,9 +36,9 @@ class _KnockTextWidgetState extends State<KnockTextWidget>
         Tween<double>(begin: 1.0, end: 0.0).animate(_animationController);
     var rng = Random();
     var x = rng.nextInt(20).toDouble();
-    var y = rng.nextInt(20).toDouble();
+    var y = rng.nextInt(80).toDouble();
     _slideAnimation =
-        Tween<Offset>(begin: const Offset(2, 2), end: Offset(x - 5, -y))
+        Tween<Offset>(begin: const Offset(0, 0), end: Offset(x - 5, -80))
             .animate(_animation);
 
     _animationController.forward();
@@ -76,7 +76,12 @@ class _KnockTextWidgetState extends State<KnockTextWidget>
           opacity: _opacityAnimation.value,
           child: SlideTransition(
             position: _slideAnimation,
-            child: widget.childWidget ,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Flexible(child: widget.childWidget!),
+              ],
+            ),
           ),
         );
       },

@@ -4,6 +4,9 @@ import 'package:grouped_list/grouped_list.dart';
 import 'package:woodenfish_bloc/repository/models/setting_model.dart';
 import 'package:woodenfish_bloc/repository/wooden_repository.dart';
 import 'package:woodenfish_bloc/ui/home/widgets/person_info/bloc/person_info_state.dart';
+import 'package:woodenfish_bloc/ui/home/widgets/person_info/person_info_bg_view.dart';
+import 'package:woodenfish_bloc/ui/home/widgets/person_info/person_info_sound_view.dart';
+import 'package:woodenfish_bloc/ui/home/widgets/person_info/pserson_info_skin_view.dart';
 import 'package:woodenfish_bloc/ui/home/widgets/woodfish_widget/bloc/woodfish_bloc.dart';
 import 'package:woodenfish_bloc/ui/home/widgets/woodfish_widget/bloc/woodfish_event.dart';
 
@@ -25,7 +28,7 @@ class PersonInfoPage extends StatelessWidget {
 
   Widget _buildPage(BuildContext context) {
     final bloc = BlocProvider.of<PersonInfoBloc>(context);
-   final woodenFishBloc = context.read<WoodFishWidgetBloc>();
+    final woodenFishBloc = context.read<WoodFishWidgetBloc>();
 
     return Container(
       color: Colors.white,
@@ -34,7 +37,7 @@ class PersonInfoPage extends StatelessWidget {
               appBar: AppBar(
                 backgroundColor: const Color(0xff37CACF),
                 shadowColor: Colors.transparent,
-                title: const Text('個人資訊'),
+                title: const Text('佈景設置'),
               ),
               body: BlocBuilder<PersonInfoBloc, PersonInfoState>(
                   builder: (context, state) {
@@ -51,7 +54,7 @@ class PersonInfoPage extends StatelessWidget {
                     sort: false,
                     useStickyGroupSeparators: true,
                     groupSeparatorBuilder: (String value) => Container(
-                      color: Color(0xFFF5F6F9),
+                      color: const Color(0xFFF5F6F9),
                       child: Padding(
                         padding: const EdgeInsets.only(
                             left: 30, right: 20, bottom: 10, top: 10),
@@ -69,70 +72,66 @@ class PersonInfoPage extends StatelessWidget {
                       return group.group;
                     },
                     indexedItemBuilder: (context, element, index) {
-                      var gridsElement = element.element;
+                      var titleName = element.name;
+                      var groupName = element.group;
+                      var elementList = element.elementList;
+                      List<ElementModel<WoodenFishBgElement, Color>>?
+                          bgElementList;
+                      List<ElementModel<WoodenFishSkinElement, Image>>?
+                          skinElementList;
+                      List<ElementModel<WoodenFishSoundElement, String>>?
+                          soundElementList;
 
-                      return (gridsElement != null && gridsElement.isNotEmpty)
-                          ? Padding(
-                              padding: const EdgeInsets.only(
-                                  left: 15, right: 15, top: 0),
-                              child: Container(
-                                decoration: const BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(10))),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: GridView.builder(
-                                      shrinkWrap: true,
-                                      gridDelegate:
-                                          const SliverGridDelegateWithFixedCrossAxisCount(
-                                              mainAxisSpacing: 20,
-                                              crossAxisCount: 5,
-                                              childAspectRatio: 1.5),
-                                      itemCount: gridsElement?.length,
-                                      itemBuilder: (context, index) {
-                                        var bgColor =
-                                            gridsElement[index].element;
-                                        var isSelectBg = state.currentBg ==
-                                            gridsElement[index].bgName;
-                                        var isDefault =
-                                            gridsElement[index].bgName ==
-                                                BgElement.none;
-                                        return GestureDetector(
-                                          onTap: () {
-                                            bloc.add(SelectBgEvent(
-                                                currentBg: gridsElement[index]
-                                                    .bgName));
-                                            woodenFishBloc.add(ChangBgEvent());
-                                          },
-                                          child: Container(
-                                              width: 50,
-                                              height: 50,
-                                              decoration: BoxDecoration(
-                                                border: Border.all(
-                                                    width: 5,
-                                                    color: isSelectBg
-                                                        ? const Color(
-                                                            0xff37CACF)
-                                                        : Colors.transparent),
-                                                shape: BoxShape.circle,
-                                                color: bgColor,
-                                              ),
-                                              child: isDefault
-                                                  ? const Center(
-                                                      child: Text('預設',
-                                                          style: TextStyle(
-                                                              fontSize: 20,
-                                                              color:
-                                                                  Colors.blue)),
-                                                    )
-                                                  : const SizedBox()),
-                                        );
-                                      }),
-                                ),
-                              ),
-                            )
-                          : SizedBox();
+                      if (elementList
+                          is List<ElementModel<WoodenFishBgElement, Color>>) {
+                        bgElementList = elementList;
+                      } else if (elementList
+                          is List<ElementModel<WoodenFishSkinElement, Image>>) {
+                        skinElementList = elementList;
+                      } else if (elementList is List<
+                          ElementModel<WoodenFishSoundElement, String>>) {
+                        soundElementList = elementList;
+                      }
+
+                      if (groupName == "背景設置") {
+                        return PersonInfoBgView(
+                            titleName: titleName,
+                            gridsElement: bgElementList ?? [],
+                            state: state,
+                            onTap: (index) {
+                              print('index = $index');
+                              bloc.add(SelectBgEvent(
+                                  currentBg: bgElementList![index].name));
+                              woodenFishBloc.add(ChangWoodenFishStateEvent());
+                            },
+                            switchOnTap: (isChange) {
+                              bloc.add(SwitchPrayEvent(switchPray: isChange));
+                              woodenFishBloc.add(ChangWoodenFishStateEvent());
+                            });
+                      } else if (groupName == "木魚外觀") {
+                        return PersonInfoSkinView(
+                            gridsElement: skinElementList ?? [],
+                            state: state,
+                            onTap: (index) {
+                              print('index = $index');
+                              bloc.add(SelectSkinEvent(
+                                  currentSkin: skinElementList![index].name));
+                              woodenFishBloc.add(ChangWoodenFishStateEvent());
+                            });
+                      } else if (groupName == "聲音設置") {
+                        return PersonInfoSoundView(
+                            gridsElement: soundElementList ?? [],
+                            state: state,
+                            onTap: (index) {
+                              print('index = $index');
+                              bloc.add(SelectSoundEvent(
+                                  currentSound: soundElementList![index].name));
+
+                              woodenFishBloc.add(ChangWoodenFishStateEvent());
+                            });
+                      } else {
+                        return const SizedBox();
+                      }
                     },
                   ),
                 );

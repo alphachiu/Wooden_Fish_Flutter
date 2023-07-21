@@ -10,7 +10,7 @@ class TabItemData {
   final Widget icon;
 
   static const Map<TabItem, TabItemData> allTabs = {
-    TabItem.home: TabItemData(title: 'Home', icon: Icon(Icons.home)),
-    TabItem.setting: TabItemData(title: 'Setting', icon: Icon(Icons.settings)),
+    TabItem.home: TabItemData(title: '首頁', icon: Icon(Icons.home)),
+    TabItem.setting: TabItemData(title: '設定', icon: Icon(Icons.settings)),
   };
 }

@@ -9,7 +9,7 @@ class SettingWidgetState {
     return SettingWidgetState()
       ..sections = [
         GroupListModel(
-            name: '個人設定', position: SettingPosition.none, group: '個人資訊'),
+            name: '佈景設置', position: SettingPosition.none, group: '佈景設置'),
         GroupListModel(
             name: '變更祈福文', position: SettingPosition.none, group: '祈福文字'),
         GroupListModel(

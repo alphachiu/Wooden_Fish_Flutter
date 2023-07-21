@@ -32,18 +32,19 @@ class _BottomTabBarPageState extends State<BottomTabBarPage> {
 
   Map<TabItem, WidgetBuilder> get widgetBuilders {
     return {
-      TabItem.home: (context) =>   WoodFishWidgetPage(),
+      TabItem.home: (context) => WoodFishWidgetPage(),
       TabItem.setting: (context) => SettingWidgetPage(),
     };
   }
 
   void _select(TabItem tabItem) {
     print('_select = ${tabItem}');
-
+    print('_currentTab = ${_currentTab}');
     if (tabItem == _currentTab) {
       navigatorKeys[tabItem]!.currentState?.popUntil((route) => route.isFirst);
     } else {
-      setState(() => _currentTab = tabItem);
+      _currentTab = tabItem;
+      //setState(() => _currentTab = tabItem);
     }
   }
 

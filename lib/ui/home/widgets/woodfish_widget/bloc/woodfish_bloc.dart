@@ -1,14 +1,17 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:woodenfish_bloc/repository/models/auto_knock_setting.dart';
 import 'package:woodenfish_bloc/repository/models/setting_model.dart';
 import 'package:woodenfish_bloc/repository/wooden_repository.dart';
 import 'package:woodenfish_bloc/ui/home/page/bottom_tabbar/bloc/bottom_tabbar_event.dart';
 import 'package:woodenfish_bloc/ui/home/widgets/woodfish_widget/knock_text_widget.dart';
+import 'package:woodenfish_bloc/utils/alert_dialog.dart';
 import 'package:woodenfish_bloc/utils/audio_play_util.dart';
 import 'package:woodenfish_bloc/utils/wooden_fish_util.dart';
 import 'woodfish_event.dart';
@@ -22,7 +25,8 @@ class WoodFishWidgetBloc
     on<WoodenFishInitEvent>(_init);
     on<IncrementEvent>(_increment);
     on<IsAutoEvent>(_isAutoEvent);
-    on<ChangBgEvent>(_changeBg);
+    on<ChangWoodenFishStateEvent>(_changeWoodenFishStateEvent);
+    on<SavePrayAvatarEvent>(_savePrayAvatarEvent);
   }
 
   final WoodenRepository _woodenRepository;
@@ -33,7 +37,12 @@ class WoodFishWidgetBloc
       WoodenFishInitEvent event, Emitter<WoodFishWidgetState> emit) async {
     state.setting = _woodenRepository.getSetting();
 
-    state.bgColor = WoodenFishUtil.internal().getColorFromString(state.setting.woodenFishBg);
+    state.bgColor = WoodenFishUtil.internal()
+        .getColorFromString(state.setting.woodenFishBg);
+    var prayAvatarPhoto = await WoodenFishUtil.internal().getAvatarImage();
+    if (prayAvatarPhoto != null) {
+      state.prayPhoto = prayAvatarPhoto;
+    }
 
     emit(state.clone());
   }
@@ -66,6 +75,7 @@ class WoodFishWidgetBloc
       return;
     }
 
+    //accumulation
     state.totalCount++;
     state.currentCount++;
 
@@ -85,12 +95,17 @@ class WoodFishWidgetBloc
 
     //check Display
     if (state.setting.isDisplay) {
-      AudioPlayUtil().play('sounds/woodenFish_sound_01.wav');
+      var soundPathName = WoodenFishUtil.internal()
+          .getSoundNameFromString(state.setting.woodenFishSound);
+      AudioPlayUtil().play(soundPathName);
+
+      var textColor = WoodenFishUtil.internal()
+          .getKnockTextColorFromString(state.setting.woodenFishBg);
 
       KnockTextWidget knockWidget = KnockTextWidget(
           childWidget: Text(
             state.setting.displayWord,
-            style: const TextStyle(fontSize: 24.0),
+            style: TextStyle(fontSize: 24.0, color: textColor),
           ),
           onRemove: (widget) async {
             await _removeWidget(widget);
@@ -119,11 +134,54 @@ class WoodFishWidgetBloc
     emit(state.clone());
   }
 
-  void _changeBg(ChangBgEvent event, Emitter<WoodFishWidgetState> emit) {
-
+  void _changeWoodenFishStateEvent(
+      ChangWoodenFishStateEvent event, Emitter<WoodFishWidgetState> emit) {
     state.setting = _woodenRepository.getSetting();
 
     emit(state.clone());
+  }
+
+  void _savePrayAvatarEvent(
+      SavePrayAvatarEvent event, Emitter<WoodFishWidgetState> emit) async {
+    state.isPhotoLoading = PrayPhotoLoadStatus.loading;
+    emit(state.clone());
+    await saveAvatarPhoto(state.prayPhotoName);
+    emit(state.clone());
+  }
+
+  Future<void> saveAvatarPhoto(String photoName) async {
+    try {
+      ImagePicker _picker = ImagePicker();
+      // using your method of getting an image
+      XFile? image = await _picker
+          .pickImage(source: ImageSource.gallery, imageQuality: 10)
+          .catchError((error) {
+        print("ImagePicker error = $error");
+        if (error.toString().contains("The user did not allow photo access")) {
+          print("The user did not allow photo access");
+
+          state.isPhotoLoading = PrayPhotoLoadStatus.fail;
+        }
+      });
+      print('image path = ${image?.path}');
+      if (image == null) {
+        print('cancel update AvatarImag');
+        state.isPhotoLoading = PrayPhotoLoadStatus.fail;
+        return;
+      }
+      File imageFile = File(image.path);
+      if (await imageFile.exists()) {
+        // getting a directory path for saving
+        String path = await WoodenFishUtil.internal().getPrayAvatarPath();
+        // copy the file to a new path
+        await imageFile.copy('$path/$photoName');
+
+        state.prayPhoto = Image.file(imageFile);
+        state.isPhotoLoading = PrayPhotoLoadStatus.finish;
+      }
+    } on FormatException catch (e) {
+      state.isPhotoLoading = PrayPhotoLoadStatus.finish;
+    }
   }
 
   Future<void> _removeWidget(KnockTextWidget widget) async {

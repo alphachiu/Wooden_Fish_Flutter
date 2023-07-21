@@ -7,6 +7,22 @@ import 'package:woodenfish_bloc/repository/models/Local_setting.dart';
 import 'package:woodenfish_bloc/repository/models/auto_knock_setting.dart';
 import 'package:woodenfish_bloc/repository/models/setting_model.dart';
 
+enum APPChannel {
+  dev,
+  product,
+}
+
+class WoodenFishConfig {
+  final String appName;
+  final String flavorName;
+  final String apiBaseUrl;
+
+  WoodenFishConfig(
+      {required this.appName,
+      required this.flavorName,
+      required this.apiBaseUrl});
+}
+
 class LocalStorageSettingApi extends SettingAPI {
   LocalStorageSettingApi({required SharedPreferences plugin})
       : _plugin = plugin {
@@ -19,6 +35,7 @@ class LocalStorageSettingApi extends SettingAPI {
   final SharedPreferences _plugin;
   LocalSetting? settingInfo = LocalSetting();
   AutoKnockSetting? autoSetting;
+  APPChannel? currentChannel;
 
   String? _getValue(String key) => _plugin.getString(key);
   Future<void> _setValue(String key, String value) =>
@@ -36,7 +53,30 @@ class LocalStorageSettingApi extends SettingAPI {
   }
 
   @override
-  LocalSetting getInfo() {
+  // TODO: implement appConfig
+  WoodenFishConfig get appConfig {
+    switch (currentChannel) {
+      case APPChannel.dev:
+        return WoodenFishConfig(
+          appName: 'WoodenFish_Dev',
+          flavorName: 'dev',
+          apiBaseUrl: 'https://accws-erp.accton.com/APPAPITest/',
+        );
+      case APPChannel.product:
+        return WoodenFishConfig(
+            appName: 'WoodenFish',
+            flavorName: 'product',
+            apiBaseUrl: 'https://accws-erp.accton.com/APPAPI/');
+      default:
+        return WoodenFishConfig(
+            appName: 'WoodenFish_Dev',
+            flavorName: 'dev',
+            apiBaseUrl: 'https://accws-erp.accton.com/APPAPITest/');
+    }
+  }
+
+  @override
+  LocalSetting getSettingInfo() {
     // TODO: implement getInfo
     return settingInfo!;
   }
@@ -65,15 +105,5 @@ class LocalStorageSettingApi extends SettingAPI {
     // TODO: implement saveAutoKnockSetting
     print('setting.autoStopTimeType = ${setting.autoStopTimeType}');
     autoSetting = setting;
-  }
-
-  @override
-  BgElement? getBgElementFromString(String bgElement) {
-    for (BgElement element in BgElement.values) {
-      if (element.toString() == bgElement) {
-        return element;
-      }
-    }
-    return null;
   }
 }

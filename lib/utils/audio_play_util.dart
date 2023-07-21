@@ -1,18 +1,17 @@
 import 'package:audioplayers/audioplayers.dart';
 
-class AudioPlayUtil{
+class AudioPlayUtil {
   late AudioPlayer audioPlayer;
   static final AudioPlayUtil _instance = AudioPlayUtil.internal();
-  factory AudioPlayUtil(){
+  factory AudioPlayUtil() {
     return _instance;
   }
 
-  AudioPlayUtil.internal(){
+  AudioPlayUtil.internal() {
     audioPlayer = AudioPlayer();
   }
 
-  Future play(String path) async{
-     await audioPlayer.play(AssetSource(path));
+  Future play(String path) async {
+    await audioPlayer.play(AssetSource(path));
   }
-
 }

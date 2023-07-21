@@ -8,5 +8,23 @@ class PersonInfoInitEvent extends PersonInfoEvent {}
 class SelectBgEvent extends PersonInfoEvent {
   SelectBgEvent({required this.currentBg});
 
-  final BgElement currentBg;
+  final WoodenFishBgElement currentBg;
+}
+
+class SelectSkinEvent extends PersonInfoEvent {
+  SelectSkinEvent({required this.currentSkin});
+
+  final WoodenFishSkinElement currentSkin;
+}
+
+class SelectSoundEvent extends PersonInfoEvent {
+  SelectSoundEvent({required this.currentSound});
+
+  final WoodenFishSoundElement currentSound;
+}
+
+class SwitchPrayEvent extends PersonInfoEvent {
+  SwitchPrayEvent({required this.switchPray});
+
+  final bool switchPray;
 }

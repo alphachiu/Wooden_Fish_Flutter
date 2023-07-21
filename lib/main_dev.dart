@@ -3,10 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:woodenfish_bloc/repository/api/local_storage_setting_api.dart';
 import 'package:woodenfish_bloc/repository/wooden_repository.dart';
-import 'package:woodenfish_bloc/ui/home/page/bottom_tabbar.dart';
-import 'package:woodenfish_bloc/ui/home/page/bottom_tabbar/bloc/bottom_tabbar_bloc.dart';
 import 'package:woodenfish_bloc/ui/home/page/bottom_tabbar/bottom_tabbar_view.dart';
-import 'package:woodenfish_bloc/ui/home/widgets/setting_widget/bloc/setting_bloc.dart';
 import 'package:woodenfish_bloc/ui/home/widgets/woodfish_widget/bloc/woodfish_bloc.dart';
 
 Future<void> main() async {
@@ -14,7 +11,7 @@ Future<void> main() async {
   final settingApi =
       LocalStorageSettingApi(plugin: await SharedPreferences.getInstance());
 
-  settingApi.currentChannel = APPChannel.product;
+  settingApi.currentChannel = APPChannel.dev;
 
   runApp(MyApp(localSettingAPI: settingApi));
 }
