@@ -78,9 +78,7 @@ class PersonInfoSoundView extends StatelessWidget {
                                           : const SizedBox()
                                     ],
                                   )),
-                              SizedBox(
-                                height: 10,
-                              ),
+
                               Text('${index + 1}'),
                             ],
                           ));

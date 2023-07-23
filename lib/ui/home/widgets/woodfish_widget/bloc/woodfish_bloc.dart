@@ -97,7 +97,9 @@ class WoodFishWidgetBloc
     if (state.setting.isDisplay) {
       var soundPathName = WoodenFishUtil.internal()
           .getSoundNameFromString(state.setting.woodenFishSound);
-      AudioPlayUtil().play(soundPathName);
+
+       AudioPlayUtil().stop;
+        AudioPlayUtil().play(soundPathName);
 
       var textColor = WoodenFishUtil.internal()
           .getKnockTextColorFromString(state.setting.woodenFishBg);
@@ -151,9 +153,9 @@ class WoodFishWidgetBloc
 
   Future<void> saveAvatarPhoto(String photoName) async {
     try {
-      ImagePicker _picker = ImagePicker();
+      ImagePicker picker = ImagePicker();
       // using your method of getting an image
-      XFile? image = await _picker
+      XFile? image = await picker
           .pickImage(source: ImageSource.gallery, imageQuality: 10)
           .catchError((error) {
         print("ImagePicker error = $error");

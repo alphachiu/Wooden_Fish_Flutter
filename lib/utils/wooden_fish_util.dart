@@ -188,6 +188,21 @@ class WoodenFishUtil {
           case WoodenFishSoundElement.sound02:
             soundNameStr = 'sounds/woodenFish_sound_02.mp3';
             break;
+          case WoodenFishSoundElement.sound03:
+            soundNameStr = 'sounds/woodenFish_sound_03.mp3';
+            break;
+          case WoodenFishSoundElement.sound04:
+            soundNameStr = 'sounds/woodenFish_sound_04.mp3';
+            break;
+          case WoodenFishSoundElement.sound05:
+            soundNameStr = 'sounds/woodenFish_sound_05.mp3';
+            break;
+          case WoodenFishSoundElement.sound06:
+            soundNameStr = 'sounds/woodenFish_sound_06.mp3';
+            break;
+          case WoodenFishSoundElement.sound07:
+            soundNameStr = 'sounds/woodenFish_sound_07.mp3';
+            break;
           default:
             break;
         }

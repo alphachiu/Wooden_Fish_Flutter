@@ -6,7 +6,6 @@ import 'package:woodenfish_bloc/repository/models/setting_model.dart';
 abstract class SettingAPI {
   const SettingAPI();
 
-  WoodenFishConfig get appConfig;
 
   Future<void> saveInfo(LocalSetting setting);
 

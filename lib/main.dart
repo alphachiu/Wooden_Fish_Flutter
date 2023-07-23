@@ -8,15 +8,22 @@ import 'package:woodenfish_bloc/ui/home/page/bottom_tabbar/bloc/bottom_tabbar_bl
 import 'package:woodenfish_bloc/ui/home/page/bottom_tabbar/bottom_tabbar_view.dart';
 import 'package:woodenfish_bloc/ui/home/widgets/setting_widget/bloc/setting_bloc.dart';
 import 'package:woodenfish_bloc/ui/home/widgets/woodfish_widget/bloc/woodfish_bloc.dart';
+import 'package:woodenfish_bloc/utils/app_config.dart';
+
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final settingApi =
       LocalStorageSettingApi(plugin: await SharedPreferences.getInstance());
 
-  settingApi.currentChannel = APPChannel.product;
+   var configuredApp = AppConfig(
+    environment: Environment.prod,
+    appTitle: 'WoodenFish',
+    child:MyApp(localSettingAPI: settingApi)
+  );
 
-  runApp(MyApp(localSettingAPI: settingApi));
+
+  runApp(configuredApp);
 }
 
 class MyApp extends StatelessWidget {
@@ -26,10 +33,10 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    print('appName = ${localSettingAPI.appConfig.appName}');
+    print('appName = ${AppConfig.of(context).appTitle}');
 
     return MaterialApp(
-      title: 'Wooden Fish',
+      title: AppConfig.of(context).appTitle,
       theme: ThemeData(
         appBarTheme: const AppBarTheme(
             backgroundColor: Color(0Xff066eb2), foregroundColor: Colors.white),

@@ -32,6 +32,11 @@ enum WoodenFishSkinElement {
 enum WoodenFishSoundElement {
   sound01,
   sound02,
+  sound03,
+  sound04,
+  sound05,
+  sound06,
+  sound07,
 }
 
 class GroupListModel {

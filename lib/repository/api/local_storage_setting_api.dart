@@ -7,21 +7,6 @@ import 'package:woodenfish_bloc/repository/models/Local_setting.dart';
 import 'package:woodenfish_bloc/repository/models/auto_knock_setting.dart';
 import 'package:woodenfish_bloc/repository/models/setting_model.dart';
 
-enum APPChannel {
-  dev,
-  product,
-}
-
-class WoodenFishConfig {
-  final String appName;
-  final String flavorName;
-  final String apiBaseUrl;
-
-  WoodenFishConfig(
-      {required this.appName,
-      required this.flavorName,
-      required this.apiBaseUrl});
-}
 
 class LocalStorageSettingApi extends SettingAPI {
   LocalStorageSettingApi({required SharedPreferences plugin})
@@ -35,7 +20,6 @@ class LocalStorageSettingApi extends SettingAPI {
   final SharedPreferences _plugin;
   LocalSetting? settingInfo = LocalSetting();
   AutoKnockSetting? autoSetting;
-  APPChannel? currentChannel;
 
   String? _getValue(String key) => _plugin.getString(key);
   Future<void> _setValue(String key, String value) =>
@@ -52,28 +36,6 @@ class LocalStorageSettingApi extends SettingAPI {
     autoSetting = AutoKnockSetting();
   }
 
-  @override
-  // TODO: implement appConfig
-  WoodenFishConfig get appConfig {
-    switch (currentChannel) {
-      case APPChannel.dev:
-        return WoodenFishConfig(
-          appName: 'WoodenFish_Dev',
-          flavorName: 'dev',
-          apiBaseUrl: 'https://accws-erp.accton.com/APPAPITest/',
-        );
-      case APPChannel.product:
-        return WoodenFishConfig(
-            appName: 'WoodenFish',
-            flavorName: 'product',
-            apiBaseUrl: 'https://accws-erp.accton.com/APPAPI/');
-      default:
-        return WoodenFishConfig(
-            appName: 'WoodenFish_Dev',
-            flavorName: 'dev',
-            apiBaseUrl: 'https://accws-erp.accton.com/APPAPITest/');
-    }
-  }
 
   @override
   LocalSetting getSettingInfo() {
