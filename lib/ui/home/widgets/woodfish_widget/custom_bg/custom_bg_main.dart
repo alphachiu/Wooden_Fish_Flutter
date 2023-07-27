@@ -31,10 +31,20 @@ class _CustomBgMainState extends State<CustomBgMain>
     bgImage = WoodenFishUtil.internal()
         .getBgImageFromString(colorName: widget.state.setting.woodenFishBg);
 
+    var size = 0.0;
+    if (MediaQuery.of(context).size.width >
+        MediaQuery.of(context).size.height) {
+      size = MediaQuery.of(context).size.width * 0.1;
+    } else {
+      size = MediaQuery.of(context).size.height * 0.15;
+    }
     return Stack(
       children: [
-        SizedBox(
-            width: double.infinity, height: double.infinity, child: bgImage),
+        Container(
+            color: widget.state.bgColor,
+            width: double.infinity,
+            height: double.infinity,
+            child: bgImage),
         Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
@@ -46,8 +56,8 @@ class _CustomBgMainState extends State<CustomBgMain>
                       InkWell(
                         onTap: widget.prayPhotoOnTap,
                         child: SizedBox(
-                          height: 150,
-                          width: 150,
+                          height: size,
+                          width: size,
                           child: CircleAvatar(
                             backgroundColor: Colors.white,
                             backgroundImage: widget.state.prayPhoto.image,

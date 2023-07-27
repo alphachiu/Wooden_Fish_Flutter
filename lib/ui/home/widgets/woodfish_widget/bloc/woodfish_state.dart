@@ -3,9 +3,10 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:woodenfish_bloc/repository/models/Local_setting.dart';
 import 'package:woodenfish_bloc/repository/models/auto_knock_setting.dart';
+import 'package:woodenfish_bloc/repository/models/setting_model.dart';
 import 'package:woodenfish_bloc/utils/wooden_fish_util.dart';
 
-enum PrayPhotoLoadStatus { init, loading, fail, finish }
+
 
 class WoodFishWidgetState {
   late int totalCount;
@@ -19,7 +20,7 @@ class WoodFishWidgetState {
   late Image wfSkin;
   late String prayPhotoName;
   late Image prayPhoto;
-  late PrayPhotoLoadStatus isPhotoLoading;
+  late PhotoLoadStatus photoLoadingStatus;
 
   WoodFishWidgetState init() {
     return WoodFishWidgetState()
@@ -39,7 +40,7 @@ class WoodFishWidgetState {
         height: 200,
       )
       ..prayPhotoName = 'prayAvatarPhoto.png'
-      ..isPhotoLoading = PrayPhotoLoadStatus.init;
+      ..photoLoadingStatus = PhotoLoadStatus.init;
   }
 
   WoodFishWidgetState clone() {
@@ -55,6 +56,6 @@ class WoodFishWidgetState {
       ..wfSkin = wfSkin
       ..prayPhoto = prayPhoto
       ..prayPhotoName = prayPhotoName
-      ..isPhotoLoading = isPhotoLoading;
+      ..photoLoadingStatus = photoLoadingStatus;
   }
 }

@@ -1,8 +1,10 @@
 import 'dart:async';
+import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:woodenfish_bloc/repository/models/setting_model.dart';
 import 'package:woodenfish_bloc/repository/wooden_repository.dart';
 
 import 'package:woodenfish_bloc/ui/home/page/bottom_tabbar/bloc/bottom_tabbar_bloc.dart';
@@ -24,7 +26,7 @@ class WoodFishWidgetPage extends StatefulWidget {
 class _WoodFishWidgetPageState extends State<WoodFishWidgetPage>
     with SingleTickerProviderStateMixin {
   late Timer autoKnockTimer;
-  late int milliseconds = 500;
+  late int milliseconds = 1;
 
   @override
   void initState() {
@@ -33,6 +35,7 @@ class _WoodFishWidgetPageState extends State<WoodFishWidgetPage>
   }
 
   void startTimer(WoodFishWidgetBloc bloc, BottomTabBarBloc btTabBar) {
+    print('milliseconds = ${milliseconds}');
     autoKnockTimer =
         Timer.periodic(Duration(milliseconds: milliseconds * 1000), (timer) {
       bloc.add(IncrementEvent(btTabBar: btTabBar));
@@ -68,8 +71,8 @@ class _WoodFishWidgetPageState extends State<WoodFishWidgetPage>
     return BlocConsumer<WoodFishWidgetBloc, WoodFishWidgetState>(
         listener: (context, state) {
       print('Wood fish listener');
-      print('PrayPhotoLoadStatus =  ${state.isPhotoLoading}');
-      if (state.isPhotoLoading == PrayPhotoLoadStatus.fail) {
+      print('PrayPhotoLoadStatus =  ${state.photoLoadingStatus}');
+      if (state.photoLoadingStatus == PhotoLoadStatus.fail) {
         showAlertDialog(context,
             cancelActionText: '',
             content: 'Not Allow Photo Access',
@@ -101,19 +104,17 @@ class _WoodFishWidgetPageState extends State<WoodFishWidgetPage>
               child: Stack(
                 children: [
                   //Change Background
-                  state.bgColor == Colors.transparent
-                      ? CustomBgMain(
-                          state: state,
-                          prayPhotoOnTap: () {
-                            bloc.add(SavePrayAvatarEvent());
-                          })
-                      : const SizedBox(),
+                  CustomBgMain(
+                      state: state,
+                      prayPhotoOnTap: () {
+                        bloc.add(SavePrayAvatarEvent());
+                      }),
                   SafeArea(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         Expanded(
-                          flex: 2,
+                          flex: 1,
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -174,42 +175,36 @@ class _WoodFishWidgetPageState extends State<WoodFishWidgetPage>
                         ), //MediaQuery.of(context).size.height
                         Expanded(
                           flex: 1,
-                          child: InkWell(
-                              highlightColor: Colors.transparent,
-                              splashColor: Colors.transparent,
-                              onTap: () async {
-                                bloc.add(IncrementEvent(btTabBar: btBloc));
-                              },
-                              child: Stack(
-                                children: [
-                                  Stack(children: state.knockAnimationWidgets),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      state.wfSkin,
-                                    ],
-                                  ),
-                                ],
-                              )
-                              // Row(
-                              //   mainAxisAlignment: MainAxisAlignment.center,
-                              //   crossAxisAlignment: CrossAxisAlignment.start,
-                              //   children: [
-                              //     Flexible(
-                              //       child: Stack(
-                              //         children: [
-                              //           Stack(
-                              //               children:
-                              //                   state.knockAnimationWidgets),
-                              //           state.wfSkin,
-                              //         ],
-                              //       ),
-                              //     ),
-                              //   ],
-                              // ),
-                              ),
+                          child: Material(
+                            color: Colors.transparent,
+                            child: InkWell(
+                                highlightColor: Colors.transparent,
+                                splashColor: Colors.transparent,
+                                onTap: () async {
+                                  bloc.add(IncrementEvent(btTabBar: btBloc));
+                                },
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Stack(
+                                      children: [
+                                        Stack(
+                                            children:
+                                                state.knockAnimationWidgets),
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            state.wfSkin,
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                )),
+                          ),
                         ),
                       ],
                     ),

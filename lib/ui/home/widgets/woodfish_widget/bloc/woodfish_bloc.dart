@@ -39,7 +39,8 @@ class WoodFishWidgetBloc
 
     state.bgColor = WoodenFishUtil.internal()
         .getColorFromString(state.setting.woodenFishBg);
-    var prayAvatarPhoto = await WoodenFishUtil.internal().getAvatarImage();
+    var prayAvatarPhoto =
+        await WoodenFishUtil.internal().getAvatarImage(state.prayPhotoName);
     if (prayAvatarPhoto != null) {
       state.prayPhoto = prayAvatarPhoto;
     }
@@ -79,11 +80,15 @@ class WoodFishWidgetBloc
     state.totalCount++;
     state.currentCount++;
 
+    //get level
+    state.setting.level = WoodenFishUtil.internal()
+        .getLevelElementFromKnockCount(state.totalCount)
+        .toString();
+
     //save autoKnockSettingInfo
     state.autoKnockSetting = autoKnockSetting;
     state.autoKnockSetting.currentCount = state.currentCount;
     print('state.autoKnockSetting.currentCount = ${state.currentCount}');
-    _woodenRepository.saveAutoKnockSetting(state.autoKnockSetting);
 
     //get setting
     state.setting = _woodenRepository.getSetting();
@@ -97,17 +102,53 @@ class WoodFishWidgetBloc
     if (state.setting.isDisplay) {
       var soundPathName = WoodenFishUtil.internal()
           .getSoundNameFromString(state.setting.woodenFishSound);
-
-       AudioPlayUtil().stop;
-        AudioPlayUtil().play(soundPathName);
+      AudioPlayUtil().stop();
+      await AudioPlayUtil().play(soundPathName);
 
       var textColor = WoodenFishUtil.internal()
           .getKnockTextColorFromString(state.setting.woodenFishBg);
+      var levelElement = WoodenFishUtil.internal()
+          .getLevelElementFromString(state.setting.level);
+      var gradient =
+          WoodenFishUtil.internal().getLinearGradientFrom(levelElement!);
+      var isTopGodLevel = WoodenFishUtil.internal()
+          .getLevelNameElementFromString(state.setting.level)
+          .contains("佛");
 
       KnockTextWidget knockWidget = KnockTextWidget(
-          childWidget: Text(
-            state.setting.displayWord,
-            style: TextStyle(fontSize: 24.0, color: textColor),
+          isTopGod: isTopGodLevel,
+          childWidget: Flexible(
+            child: Stack(
+              children: [
+                ShaderMask(
+                  blendMode: BlendMode.srcATop,
+                  shaderCallback: (bounds) {
+                    return gradient.createShader(bounds);
+                  },
+                  child: isTopGodLevel
+                      ? Text(
+                          state.setting.displayWord,
+                          style: TextStyle(
+                              fontSize: 24.0,
+                              foreground: Paint()
+                                ..style = PaintingStyle.stroke
+                                ..strokeWidth = 2
+                                ..color = Colors.red),
+                        )
+                      : const SizedBox(),
+                ),
+                ShaderMask(
+                  blendMode: BlendMode.srcATop,
+                  shaderCallback: (bounds) {
+                    return gradient.createShader(bounds);
+                  },
+                  child: Text(
+                    state.setting.displayWord,
+                    style: TextStyle(fontSize: 24.0, color: textColor),
+                  ),
+                ),
+              ],
+            ),
           ),
           onRemove: (widget) async {
             await _removeWidget(widget);
@@ -127,6 +168,11 @@ class WoodFishWidgetBloc
       event.btTabBar.add(CurrentCountEvent(count: state.currentCount));
     }
 
+    _woodenRepository.saveAutoKnockSetting(state.autoKnockSetting);
+
+    //dev
+    //_woodenRepository.saveSetting(state.setting);
+
     emit(state.clone());
   }
 
@@ -145,7 +191,7 @@ class WoodFishWidgetBloc
 
   void _savePrayAvatarEvent(
       SavePrayAvatarEvent event, Emitter<WoodFishWidgetState> emit) async {
-    state.isPhotoLoading = PrayPhotoLoadStatus.loading;
+    state.photoLoadingStatus = PhotoLoadStatus.loading;
     emit(state.clone());
     await saveAvatarPhoto(state.prayPhotoName);
     emit(state.clone());
@@ -162,13 +208,13 @@ class WoodFishWidgetBloc
         if (error.toString().contains("The user did not allow photo access")) {
           print("The user did not allow photo access");
 
-          state.isPhotoLoading = PrayPhotoLoadStatus.fail;
+          state.photoLoadingStatus = PhotoLoadStatus.fail;
         }
       });
       print('image path = ${image?.path}');
       if (image == null) {
         print('cancel update AvatarImag');
-        state.isPhotoLoading = PrayPhotoLoadStatus.fail;
+        state.photoLoadingStatus = PhotoLoadStatus.fail;
         return;
       }
       File imageFile = File(image.path);
@@ -179,10 +225,10 @@ class WoodFishWidgetBloc
         await imageFile.copy('$path/$photoName');
 
         state.prayPhoto = Image.file(imageFile);
-        state.isPhotoLoading = PrayPhotoLoadStatus.finish;
+        state.photoLoadingStatus = PhotoLoadStatus.finish;
       }
     } on FormatException catch (e) {
-      state.isPhotoLoading = PrayPhotoLoadStatus.finish;
+      state.photoLoadingStatus = PhotoLoadStatus.finish;
     }
   }
 

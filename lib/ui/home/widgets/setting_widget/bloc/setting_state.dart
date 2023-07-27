@@ -1,9 +1,15 @@
+import 'package:flutter/material.dart';
 import 'package:woodenfish_bloc/repository/models/Local_setting.dart';
 import 'package:woodenfish_bloc/repository/models/setting_model.dart';
+import 'package:woodenfish_bloc/utils/wooden_fish_util.dart';
 
 class SettingWidgetState {
   late List<GroupListModel> sections;
   late LocalSetting setting;
+  late String levelName;
+  late Image? avatarPhoto;
+  late PhotoLoadStatus photoLoadingStatus;
+  late String version;
 
   SettingWidgetState init() {
     return SettingWidgetState()
@@ -16,14 +22,24 @@ class SettingWidgetState {
             name: '自動敲擊設置', position: SettingPosition.none, group: '播放模式'),
         GroupListModel(
             name: '顯示祈福文', position: SettingPosition.head, group: '其他設置'),
-        GroupListModel(name: '震動', position: SettingPosition.end, group: '其他設置')
+        GroupListModel(
+            name: '震動', position: SettingPosition.end, group: '其他設置'),
       ]
-      ..setting = LocalSetting();
+      ..setting = LocalSetting()
+      ..levelName = ""
+      ..avatarPhoto =
+          const Image(image: AssetImage('assets/images/user_Icon.png'))
+      ..photoLoadingStatus = PhotoLoadStatus.init
+      ..version = '';
   }
 
   SettingWidgetState clone() {
     return SettingWidgetState()
       ..sections = sections
-      ..setting = setting;
+      ..setting = setting
+      ..levelName = levelName
+      ..avatarPhoto = avatarPhoto
+      ..photoLoadingStatus = photoLoadingStatus
+      ..version = version;
   }
 }

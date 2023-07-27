@@ -12,6 +12,12 @@ class AudioPlayUtil {
   }
 
   Future play(String path) async {
-    await audioPlayer.play(AssetSource(path));
+    await audioPlayer.setSource(AssetSource(path));
+    await audioPlayer.setVolume(1.0);
+    await audioPlayer.resume();
+  }
+
+  Future stop() async {
+    await audioPlayer.stop();
   }
 }

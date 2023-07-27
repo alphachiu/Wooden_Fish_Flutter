@@ -13,7 +13,14 @@ class SwitchVibrationEvent extends SettingWidgetEvent {
   final bool switchVibration;
 }
 
-class ChangeDisplayWordEvent extends SettingWidgetEvent {
-  ChangeDisplayWordEvent({required this.displayWord});
+class EditeDisplayWordEvent extends SettingWidgetEvent {
+  EditeDisplayWordEvent({required this.displayWord});
   final String displayWord;
 }
+
+class EditeNameEvent extends SettingWidgetEvent {
+  EditeNameEvent({required this.name});
+  final String name;
+}
+
+class SavePersonAvatarEvent extends SettingWidgetEvent {}

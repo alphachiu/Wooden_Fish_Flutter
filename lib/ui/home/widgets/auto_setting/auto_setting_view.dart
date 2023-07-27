@@ -300,7 +300,7 @@ class _AutoSettingPageState extends State<AutoSettingPage> {
                                         inactiveColor: const Color(0xFFF0F1F3),
                                         value: state.setting.autoSpeed,
                                         max: 5,
-                                        min: 0.5,
+                                        min: 1,
                                         label: "${state.setting.autoSpeed}",
                                         onChanged: (value) {
                                           var v = value.toStringAsFixed(1);

@@ -18,6 +18,9 @@ LocalSetting _$SettingFromJson(Map<String, dynamic> json) => LocalSetting(
       woodenFishSound:
           json['woodenFishSound'] as String? ?? "woodenFish_sound_01.wav",
       isSetPrayPhoto: json['isSetPrayPhoto'] as bool? ?? false,
+      userName: json['userName'] as String? ?? "靜心小僧",
+      level: json['level'] as String? ?? "WoodenFishLevelElement.lv01",
+      totalCount: json['totalCount'] as int? ?? 0,
     );
 
 Map<String, dynamic> _$SettingToJson(LocalSetting instance) =>
@@ -30,4 +33,7 @@ Map<String, dynamic> _$SettingToJson(LocalSetting instance) =>
       'woodenFishSkin': instance.woodenFishSkin,
       'woodenFishSound': instance.woodenFishSound,
       'isSetPrayPhoto': instance.isSetPrayPhoto,
+      'userName': instance.userName,
+      'level': instance.level,
+      'totalCount': instance.totalCount,
     };
