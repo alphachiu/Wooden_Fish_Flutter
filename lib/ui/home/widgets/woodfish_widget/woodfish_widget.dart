@@ -32,6 +32,8 @@ class _WoodFishWidgetPageState extends State<WoodFishWidgetPage>
   void initState() {
     // TODO: implement initState
     super.initState();
+    WoodenFishUtil.internal().requestNotificationPermissions();
+    WoodenFishUtil.internal().scheduleDailyTenAMNotification();
   }
 
   void startTimer(WoodFishWidgetBloc bloc, BottomTabBarBloc btTabBar) {
