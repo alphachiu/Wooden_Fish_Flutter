@@ -95,8 +95,8 @@ class _WoodFishWidgetPageState extends State<WoodFishWidgetPage>
           state.wfSkin = WoodenFishUtil.internal()
               .getSkinImageFromString(state.setting.woodenFishSkin);
 
-          var knockCount = WoodenFishUtil.internal()
-              .transformationKnockCount(state.totalCount);
+          // var knockCount = WoodenFishUtil.internal()
+          //     .transformationKnockCount(state.totalCount);
 
           return Scaffold(
             backgroundColor: state.bgColor,
@@ -121,56 +121,65 @@ class _WoodFishWidgetPageState extends State<WoodFishWidgetPage>
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Row(
-                                children: [
-                                  const SizedBox(
-                                    width: 20,
-                                  ),
-                                  Column(
-                                    children: [
-                                      const SizedBox(
-                                        height: 10,
+                              Flexible(
+                                child: Row(
+                                  children: [
+                                    const SizedBox(
+                                      width: 20,
+                                    ),
+                                    Flexible(
+                                      child: Column(
+                                        children: [
+                                          const SizedBox(
+                                            height: 10,
+                                          ),
+                                          Text(
+                                            '累積敲 ${state.totalCount} 次',
+                                            overflow: TextOverflow.clip,
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 20.0,
+                                                color: state.bgColor ==
+                                                        Colors.white
+                                                    ? Colors.black
+                                                    : Colors.white),
+                                          ),
+                                        ],
                                       ),
-                                      Text(
-                                        '累積敲 $knockCount 次',
-                                        overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              SizedBox(
+                                width: 120,
+                                child: Row(
+                                  children: [
+                                    Text(state.isAuto ? '手動' : '自動',
                                         style: TextStyle(
                                             fontWeight: FontWeight.bold,
                                             fontSize: 20.0,
                                             color: state.bgColor == Colors.white
                                                 ? Colors.black
-                                                : Colors.white),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                              Row(
-                                children: [
-                                  Text(state.isAuto ? '手動' : '自動',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 20.0,
-                                          color: state.bgColor == Colors.white
-                                              ? Colors.black
-                                              : Colors.white)),
-                                  Switch.adaptive(
-                                      value: state.isAuto,
-                                      inactiveTrackColor: Colors.grey,
-                                      activeColor: const Color(0xff37CACF),
-                                      onChanged: (isChange) {
-                                        bloc.add(IsAutoEvent(isAuto: isChange));
-                                        //milliseconds += 2000;
-                                        if (!isChange) {
-                                          stopAuto();
-                                        } else {
-                                          startTimer(bloc, btBloc);
-                                        }
-                                      }),
-                                  const SizedBox(
-                                    width: 10,
-                                  ),
-                                ],
+                                                : Colors.white)),
+                                    Switch.adaptive(
+                                        value: state.isAuto,
+                                        inactiveTrackColor: Colors.grey,
+                                        activeColor: const Color(0xff37CACF),
+                                        onChanged: (isChange) {
+                                          bloc.add(
+                                              IsAutoEvent(isAuto: isChange));
+                                          //milliseconds += 2000;
+                                          if (!isChange) {
+                                            stopAuto();
+                                          } else {
+                                            startTimer(bloc, btBloc);
+                                          }
+                                        }),
+                                    const SizedBox(
+                                      width: 10,
+                                    ),
+                                  ],
+                                ),
                               )
                             ],
                           ),
@@ -183,7 +192,11 @@ class _WoodFishWidgetPageState extends State<WoodFishWidgetPage>
                                 highlightColor: Colors.transparent,
                                 splashColor: Colors.transparent,
                                 onTap: () async {
-                                  bloc.add(IncrementEvent(btTabBar: btBloc));
+                                  if (state.woodenFishProgress) {
+                                    return;
+                                  } else {
+                                    bloc.add(IncrementEvent(btTabBar: btBloc));
+                                  }
                                 },
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.center,

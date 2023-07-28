@@ -218,12 +218,12 @@ class WoodenFishUtil {
   }
 
   Color getKnockTextColorFromString(String colorName) {
-    Color? bgColor;
+    Color? wordColor;
     for (WoodenFishBgElement element in WoodenFishBgElement.values) {
       if (element.toString() == colorName) {
         switch (element) {
           case WoodenFishBgElement.none:
-            bgColor = Colors.black;
+            wordColor = Colors.black;
             break;
           case WoodenFishBgElement.red:
           case WoodenFishBgElement.orange:
@@ -232,7 +232,7 @@ class WoodenFishUtil {
           case WoodenFishBgElement.blue:
           case WoodenFishBgElement.indigo:
           case WoodenFishBgElement.purple:
-            bgColor = Colors.white;
+            wordColor = Colors.white;
             break;
 
           case WoodenFishBgElement.bg01:
@@ -240,14 +240,14 @@ class WoodenFishUtil {
           case WoodenFishBgElement.bg03:
           case WoodenFishBgElement.bg04:
           case WoodenFishBgElement.bg05:
-            bgColor = Colors.yellow;
+            wordColor = Colors.yellow;
             break;
         }
         break;
       }
     }
 
-    return bgColor!;
+    return wordColor!;
   }
 
   Image? getBgImageFromString({required String colorName, double size = 0}) {
@@ -418,17 +418,93 @@ class WoodenFishUtil {
   }
 
   String transformationKnockCount(int count) {
-    var resultForm = '';
-    if (count >= 1000 && count < 1000000) {
-      resultForm = "${(count / 1000).toStringAsFixed(1)}K";
-    } else if (count >= 1000000 && count < 1000000000) {
-      resultForm = "${(count / 1000000).toStringAsFixed(1)}M";
-    } else if (count >= 1000000000 && count < 1000000000000) {
-      resultForm = "${(count / 1000000000).toStringAsFixed(1)}B";
-    } else {
-      resultForm = count.toString();
+    var num = count.toDouble();
+
+    final List<String> cnUpperNumber = [
+      "0",
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6",
+      "7",
+      "8",
+      "9"
+    ];
+    final List<String> cnUpperMonetrayUnit = [
+      "分",
+      "角",
+      "圆",
+      "拾",
+      "佰",
+      "仟",
+      "萬",
+      "拾",
+      "佰",
+      "仟",
+      "億",
+      "拾",
+      "佰",
+      "千",
+      "兆",
+      "拾",
+      "佰",
+      "千"
+    ];
+
+    if (num.toStringAsFixed(0).length > 15) {
+      return '超出最大數值';
     }
-    return resultForm;
+    num = num * 100;
+    int tempValue = int.parse(num.toStringAsFixed(0)).abs();
+
+    int p = 10;
+    int i = -1;
+    String CN_UP = '';
+    bool lastZero = false;
+    bool finish = false;
+    bool tag = false;
+    bool tag2 = false;
+    while (!finish) {
+      if (tempValue == 0) {
+        break;
+      }
+      int positionNum = tempValue % p;
+      double n = (tempValue - positionNum) / 10;
+      tempValue = int.parse(n.toStringAsFixed(0));
+      String tempChinese = '';
+      i++;
+      if (positionNum == 0) {
+        if (cnUpperMonetrayUnit[i] == "万" ||
+            cnUpperMonetrayUnit[i] == "亿" ||
+            cnUpperMonetrayUnit[i] == "兆") {
+          if (lastZero && tag2) {
+            CN_UP = cnUpperNumber[0] + CN_UP;
+          }
+          CN_UP = CN_UP;
+          lastZero = false;
+          tag = true;
+          continue;
+        }
+        if (!lastZero) {
+          lastZero = true;
+        } else {
+          continue;
+        }
+      } else {
+        if (lastZero && !tag && tag2) {
+          CN_UP = CN_UP;
+        }
+        tag = false;
+        tag2 = true;
+        lastZero = false;
+        tempChinese = cnUpperNumber[positionNum] + cnUpperMonetrayUnit[i];
+      }
+      CN_UP = tempChinese + CN_UP;
+    }
+
+    return CN_UP;
   }
 
   Future<String> getPrayAvatarPath() async {
@@ -613,14 +689,14 @@ class WoodenFishUtil {
     return gradient!;
   }
 
-  WoodenFishLevelElement getLevelElementFromKnockCount(int count) {
-    if (count <= 10) {
+  WoodenFishLevelElement getLevelElementFromKnockCount(BigInt count) {
+    if (count <= BigInt.from(10)) {
       return WoodenFishLevelElement.lv01;
-    } else if (count >= 11 && count <= 20) {
+    } else if (count >= BigInt.from(11) && count <= BigInt.from(20)) {
       return WoodenFishLevelElement.lv04;
-    } else if (count >= 21 && count <= 30) {
+    } else if (count >= BigInt.from(21) && count <= BigInt.from(30)) {
       return WoodenFishLevelElement.lv08;
-    } else if (count >= 31 && count <= 40) {
+    } else if (count >= BigInt.from(31) && count <= BigInt.from(40)) {
       return WoodenFishLevelElement.lv16;
     } else {
       return WoodenFishLevelElement.lv16;

@@ -77,7 +77,7 @@ class WoodFishWidgetBloc
     }
 
     //accumulation
-    state.totalCount++;
+    state.totalCount += BigInt.from(1);
     state.currentCount++;
 
     //get level
@@ -118,37 +118,43 @@ class WoodFishWidgetBloc
       KnockTextWidget knockWidget = KnockTextWidget(
           isTopGod: isTopGodLevel,
           childWidget: Flexible(
-            child: Stack(
-              children: [
-                ShaderMask(
-                  blendMode: BlendMode.srcATop,
-                  shaderCallback: (bounds) {
-                    return gradient.createShader(bounds);
-                  },
-                  child: isTopGodLevel
-                      ? Text(
+            child: (state.setting.woodenFishBg != "WoodenFishBgElement.none")
+
+                ///when bg is none
+                ? Stack(
+                    children: [
+                      ShaderMask(
+                        blendMode: BlendMode.srcATop,
+                        shaderCallback: (bounds) {
+                          return gradient.createShader(bounds);
+                        },
+                        child: isTopGodLevel
+                            ? Text(
+                                state.setting.displayWord,
+                                style: TextStyle(
+                                    fontSize: 30.0,
+                                    foreground: Paint()
+                                      ..style = PaintingStyle.stroke
+                                      ..strokeWidth = 2),
+                              )
+                            : const SizedBox(),
+                      ),
+                      ShaderMask(
+                        blendMode: BlendMode.srcATop,
+                        shaderCallback: (bounds) {
+                          return gradient.createShader(bounds);
+                        },
+                        child: Text(
                           state.setting.displayWord,
-                          style: TextStyle(
-                              fontSize: 24.0,
-                              foreground: Paint()
-                                ..style = PaintingStyle.stroke
-                                ..strokeWidth = 2
-                                ..color = Colors.red),
-                        )
-                      : const SizedBox(),
-                ),
-                ShaderMask(
-                  blendMode: BlendMode.srcATop,
-                  shaderCallback: (bounds) {
-                    return gradient.createShader(bounds);
-                  },
-                  child: Text(
+                          style: const TextStyle(fontSize: 30),
+                        ),
+                      ),
+                    ],
+                  )
+                : Text(
                     state.setting.displayWord,
-                    style: TextStyle(fontSize: 24.0, color: textColor),
+                    style: TextStyle(fontSize: 30, color: textColor),
                   ),
-                ),
-              ],
-            ),
           ),
           onRemove: (widget) async {
             await _removeWidget(widget);
@@ -173,6 +179,13 @@ class WoodFishWidgetBloc
     //dev
     //_woodenRepository.saveSetting(state.setting);
 
+    //Knock once per second
+    state.woodenFishProgress = true;
+    emit(state.clone());
+    if (!state.isAuto) {
+      await Future.delayed(const Duration(milliseconds: 300));
+    }
+    state.woodenFishProgress = false;
     emit(state.clone());
   }
 

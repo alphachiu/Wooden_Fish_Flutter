@@ -6,10 +6,8 @@ import 'package:woodenfish_bloc/repository/models/auto_knock_setting.dart';
 import 'package:woodenfish_bloc/repository/models/setting_model.dart';
 import 'package:woodenfish_bloc/utils/wooden_fish_util.dart';
 
-
-
 class WoodFishWidgetState {
-  late int totalCount;
+  late BigInt totalCount;
   late int currentCount;
   late List<Widget> knockAnimationWidgets;
   late bool isAuto;
@@ -21,10 +19,11 @@ class WoodFishWidgetState {
   late String prayPhotoName;
   late Image prayPhoto;
   late PhotoLoadStatus photoLoadingStatus;
+  late bool woodenFishProgress;
 
   WoodFishWidgetState init() {
     return WoodFishWidgetState()
-      ..totalCount = 0
+      ..totalCount = BigInt.from(0)
       ..currentCount = 0
       ..currentLimit = 0
       ..knockAnimationWidgets = []
@@ -40,7 +39,8 @@ class WoodFishWidgetState {
         height: 200,
       )
       ..prayPhotoName = 'prayAvatarPhoto.png'
-      ..photoLoadingStatus = PhotoLoadStatus.init;
+      ..photoLoadingStatus = PhotoLoadStatus.init
+      ..woodenFishProgress = false;
   }
 
   WoodFishWidgetState clone() {
@@ -56,6 +56,7 @@ class WoodFishWidgetState {
       ..wfSkin = wfSkin
       ..prayPhoto = prayPhoto
       ..prayPhotoName = prayPhotoName
-      ..photoLoadingStatus = photoLoadingStatus;
+      ..photoLoadingStatus = photoLoadingStatus
+      ..woodenFishProgress = woodenFishProgress;
   }
 }
