@@ -24,3 +24,5 @@ class EditeNameEvent extends SettingWidgetEvent {
 }
 
 class SavePersonAvatarEvent extends SettingWidgetEvent {}
+
+class ReviewLevelStepperEvent extends SettingWidgetEvent {}

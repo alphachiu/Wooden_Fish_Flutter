@@ -1,3 +1,4 @@
+import 'package:another_stepper/another_stepper.dart';
 import 'package:flutter/material.dart';
 import 'package:woodenfish_bloc/repository/models/Local_setting.dart';
 import 'package:woodenfish_bloc/repository/models/setting_model.dart';
@@ -10,6 +11,8 @@ class SettingWidgetState {
   late Image? avatarPhoto;
   late PhotoLoadStatus photoLoadingStatus;
   late String version;
+  late List<StepperData> stepperData;
+  late int currentStepperInt;
 
   SettingWidgetState init() {
     return SettingWidgetState()
@@ -30,7 +33,9 @@ class SettingWidgetState {
       ..avatarPhoto =
           const Image(image: AssetImage('assets/images/user_Icon.png'))
       ..photoLoadingStatus = PhotoLoadStatus.init
-      ..version = '';
+      ..version = ''
+      ..stepperData = []
+      ..currentStepperInt = 0;
   }
 
   SettingWidgetState clone() {
@@ -40,6 +45,8 @@ class SettingWidgetState {
       ..levelName = levelName
       ..avatarPhoto = avatarPhoto
       ..photoLoadingStatus = photoLoadingStatus
-      ..version = version;
+      ..version = version
+      ..stepperData = stepperData
+      ..currentStepperInt = currentStepperInt;
   }
 }

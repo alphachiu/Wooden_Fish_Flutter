@@ -1,27 +1,32 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:woodenfish_bloc/repository/api/local_storage_setting_api.dart';
 import 'package:woodenfish_bloc/repository/wooden_repository.dart';
-import 'package:woodenfish_bloc/ui/home/page/bottom_tabbar.dart';
-import 'package:woodenfish_bloc/ui/home/page/bottom_tabbar/bloc/bottom_tabbar_bloc.dart';
 import 'package:woodenfish_bloc/ui/home/page/bottom_tabbar/bottom_tabbar_view.dart';
-import 'package:woodenfish_bloc/ui/home/widgets/setting_widget/bloc/setting_bloc.dart';
 import 'package:woodenfish_bloc/ui/home/widgets/woodfish_widget/bloc/woodfish_bloc.dart';
 import 'package:woodenfish_bloc/utils/app_config.dart';
+import 'package:woodenfish_bloc/utils/wooden_fish_util.dart';
 
+import 'firebase/prod/firebase_options.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
   final settingApi =
       LocalStorageSettingApi(plugin: await SharedPreferences.getInstance());
 
-   var configuredApp = AppConfig(
-    environment: Environment.prod,
-    appTitle: 'WoodenFish',
-    child:MyApp(localSettingAPI: settingApi)
-  );
+  var configuredApp = AppConfig(
+      environment: Environment.prod,
+      appTitle: 'WoodenFish',
+      child: MyApp(localSettingAPI: settingApi));
 
+  ///LocalNotification init
+  await WoodenFishUtil.internal().locationNotificationInit();
 
   runApp(configuredApp);
 }

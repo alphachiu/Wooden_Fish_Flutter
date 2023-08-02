@@ -48,6 +48,10 @@ dependencies:
   flutter_local_notifications: ^15.1.0+1
   flutter_timezone: ^1.0.7
   another_stepper: ^1.2.2
+  firebase_core: ^2.15.0
+
+
+
 
 
 dev_dependencies:

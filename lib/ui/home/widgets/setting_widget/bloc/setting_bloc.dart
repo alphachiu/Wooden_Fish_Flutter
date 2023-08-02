@@ -1,4 +1,7 @@
+import 'package:another_stepper/dto/stepper_data.dart';
 import 'package:bloc/bloc.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:woodenfish_bloc/repository/models/setting_model.dart';
 import 'package:woodenfish_bloc/repository/wooden_repository.dart';
@@ -17,6 +20,7 @@ class SettingWidgetBloc extends Bloc<SettingWidgetEvent, SettingWidgetState> {
     on<EditeDisplayWordEvent>(_editeDisplayWord);
     on<SavePersonAvatarEvent>(_savePersonAvatar);
     on<EditeNameEvent>(_editeName);
+    on<ReviewLevelStepperEvent>(_reviewLevelStepper);
   }
 
   final WoodenRepository _woodenRepository;
@@ -86,6 +90,48 @@ class SettingWidgetBloc extends Bloc<SettingWidgetEvent, SettingWidgetState> {
       state.photoLoadingStatus = PhotoLoadStatus.finish;
       state.avatarPhoto = avatarPhoto;
     }
+    emit(state.clone());
+  }
+
+  void _reviewLevelStepper(
+      ReviewLevelStepperEvent event, Emitter<SettingWidgetState> emit) async {
+    var level = WoodenFishUtil.internal()
+        .getLevelElementFromKnockCount(BigInt.from(state.setting.totalCount))
+        .toString();
+
+    state.currentStepperInt = int.parse(level.split("lv")[1].padLeft(1, '2'));
+    print('currentStepper = ${state.currentStepperInt}');
+
+    state.stepperData = [];
+
+    for (WoodenFishLevelElement element in WoodenFishLevelElement.values) {
+      var name = WoodenFishUtil.internal()
+          .getLevelNameElementFromString(element.toString());
+      print('state.levelName = ${state.levelName}');
+      Color? currentTextColor =
+          (state.levelName != name) ? Colors.grey : Colors.black;
+      Color? currentIconColor =
+          (state.levelName != name) ? Colors.grey : Colors.green;
+      var currentLevelText = (state.levelName != name) ? "" : "修行已到達";
+
+      var data = StepperData(
+          title: StepperText(
+            name,
+            textStyle: TextStyle(
+              color: currentTextColor,
+            ),
+          ),
+          subtitle: StepperText(currentLevelText),
+          iconWidget: Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+                color: currentIconColor,
+                borderRadius: const BorderRadius.all(Radius.circular(30))),
+          ));
+
+      state.stepperData.add(data);
+    }
+
     emit(state.clone());
   }
 }
