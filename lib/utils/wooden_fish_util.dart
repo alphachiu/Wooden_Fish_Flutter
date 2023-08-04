@@ -690,16 +690,157 @@ class WoodenFishUtil {
   }
 
   WoodenFishLevelElement getLevelElementFromKnockCount(BigInt count) {
-    if (count <= BigInt.from(10)) {
+    if (count <= BigInt.from(3600 * 24 * 7)) {
       return WoodenFishLevelElement.lv01;
-    } else if (count >= BigInt.from(11) && count <= BigInt.from(20)) {
+    } else if (count >= BigInt.from((3600 * 24 * 7 * 2) + 1) &&
+        count <= BigInt.from((3600 * 24 * 7 * 3))) {
+      return WoodenFishLevelElement.lv02;
+    } else if (count >= BigInt.from((3600 * 24 * 7 * 3) + 1) &&
+        count <= BigInt.from((3600 * 24 * 7 * 4))) {
+      return WoodenFishLevelElement.lv03;
+    } else if (count >= BigInt.from((3600 * 24 * 7 * 4) + 1) &&
+        count <= BigInt.from((3600 * 24 * 7 * 5))) {
       return WoodenFishLevelElement.lv04;
-    } else if (count >= BigInt.from(21) && count <= BigInt.from(30)) {
+    } else if (count >= BigInt.from((3600 * 24 * 7 * 5) + 1) &&
+        count <= BigInt.from((3600 * 24 * 7 * 6))) {
+      return WoodenFishLevelElement.lv05;
+    } else if (count >= BigInt.from((3600 * 24 * 7 * 6) + 1) &&
+        count <= BigInt.from((3600 * 24 * 7 * 7))) {
+      return WoodenFishLevelElement.lv06;
+    } else if (count >= BigInt.from((3600 * 24 * 7 * 7) + 1) &&
+        count <= BigInt.from((3600 * 24 * 7 * 8))) {
+      return WoodenFishLevelElement.lv07;
+    } else if (count >= BigInt.from((3600 * 24 * 7 * 8) + 1) &&
+        count <= BigInt.from((3600 * 24 * 7 * 9))) {
       return WoodenFishLevelElement.lv08;
-    } else if (count >= BigInt.from(31) && count <= BigInt.from(40)) {
+    } else if (count >= BigInt.from((3600 * 24 * 7 * 9) + 1) &&
+        count <= BigInt.from((3600 * 24 * 7 * 10))) {
+      return WoodenFishLevelElement.lv09;
+    } else if (count >= BigInt.from((3600 * 24 * 7 * 10) + 1) &&
+        count <= BigInt.from((3600 * 24 * 7 * 11))) {
+      return WoodenFishLevelElement.lv10;
+    } else if (count >= BigInt.from((3600 * 24 * 7 * 11) + 1) &&
+        count <= BigInt.from((3600 * 24 * 7 * 12))) {
+      return WoodenFishLevelElement.lv11;
+    } else if (count >= BigInt.from((3600 * 24 * 7 * 12) + 1) &&
+        count <= BigInt.from((3600 * 24 * 7 * 13))) {
+      return WoodenFishLevelElement.lv12;
+    } else if (count >= BigInt.from((3600 * 24 * 7 * 13) + 1) &&
+        count <= BigInt.from((3600 * 24 * 7 * 14))) {
+      return WoodenFishLevelElement.lv13;
+    } else if (count >= BigInt.from((3600 * 24 * 7 * 14) + 1) &&
+        count <= BigInt.from((3600 * 24 * 7 * 15))) {
+      return WoodenFishLevelElement.lv14;
+    } else if (count >= BigInt.from((3600 * 24 * 7 * 15) + 1) &&
+        count <= BigInt.from((3600 * 24 * 7 * 16))) {
+      return WoodenFishLevelElement.lv15;
+    } else if (count >= BigInt.from((3600 * 24 * 7 * 16) + 1) &&
+        count <= BigInt.from((3600 * 24 * 7 * 17))) {
       return WoodenFishLevelElement.lv16;
+    } else if (count >= BigInt.from((3600 * 24 * 7 * 17) + 1) &&
+        count <= BigInt.from((3600 * 24 * 7 * 18))) {
+      return WoodenFishLevelElement.lv17;
+    } else if (count >= BigInt.from((3600 * 24 * 7 * 18) + 1) &&
+        count <= BigInt.from((3600 * 24 * 7 * 19))) {
+      return WoodenFishLevelElement.lv18;
+    } else if (count >= BigInt.from((3600 * 24 * 7 * 19) + 1) &&
+        count <= BigInt.from((3600 * 24 * 7 * 20))) {
+      return WoodenFishLevelElement.lv19;
+    } else if (count >= BigInt.from((3600 * 24 * 7 * 20) + 1) &&
+        count <= BigInt.from((3600 * 24 * 7 * 21))) {
+      return WoodenFishLevelElement.lv20;
+    } else if (count >= BigInt.from((3600 * 24 * 7 * 21) + 1) &&
+        count <= BigInt.from((3600 * 24 * 7 * 22))) {
+      return WoodenFishLevelElement.lv21;
+    } else if (count >= BigInt.from((3600 * 24 * 7 * 22) + 1) &&
+        count <= BigInt.from((3600 * 24 * 7 * 23))) {
+      return WoodenFishLevelElement.lv22;
+    } else if (count >= BigInt.from((3600 * 24 * 7 * 23) + 1) &&
+        count <= BigInt.from((3600 * 24 * 7 * 24))) {
+      return WoodenFishLevelElement.lv23;
+    } else if (count >= BigInt.from((3600 * 24 * 7 * 24) + 1) &&
+        count <= BigInt.from((3600 * 24 * 7 * 25))) {
+      return WoodenFishLevelElement.lv24;
+    } else if (count >= BigInt.from((3600 * 24 * 7 * 25) + 1) &&
+        count <= BigInt.from((3600 * 24 * 7 * 26))) {
+      return WoodenFishLevelElement.lv25;
+    } else if (count >= BigInt.from((3600 * 24 * 7 * 26) + 1) &&
+        count <= BigInt.from((3600 * 24 * 7 * 27))) {
+      return WoodenFishLevelElement.lv26;
+    } else if (count >= BigInt.from((3600 * 24 * 7 * 27) + 1) &&
+        count <= BigInt.from((3600 * 24 * 7 * 28))) {
+      return WoodenFishLevelElement.lv27;
+    } else if (count >= BigInt.from((3600 * 24 * 7 * 28) + 1) &&
+        count <= BigInt.from((3600 * 24 * 7 * 29))) {
+      return WoodenFishLevelElement.lv28;
+    } else if (count >= BigInt.from((3600 * 24 * 7 * 29) + 1) &&
+        count <= BigInt.from((3600 * 24 * 7 * 30))) {
+      return WoodenFishLevelElement.lv29;
+    } else if (count >= BigInt.from((3600 * 24 * 7 * 30) + 1) &&
+        count <= BigInt.from((3600 * 24 * 7 * 31))) {
+      return WoodenFishLevelElement.lv30;
+    } else if (count >= BigInt.from((3600 * 24 * 7 * 31) + 1) &&
+        count <= BigInt.from((3600 * 24 * 7 * 32))) {
+      return WoodenFishLevelElement.lv31;
+    } else if (count >= BigInt.from((3600 * 24 * 7 * 32) + 1) &&
+        count <= BigInt.from((3600 * 24 * 7 * 33))) {
+      return WoodenFishLevelElement.lv32;
+    } else if (count >= BigInt.from((3600 * 24 * 7 * 33) + 1) &&
+        count <= BigInt.from((3600 * 24 * 7 * 34))) {
+      return WoodenFishLevelElement.lv33;
+    } else if (count >= BigInt.from((3600 * 24 * 7 * 34) + 1) &&
+        count <= BigInt.from((3600 * 24 * 7 * 35))) {
+      return WoodenFishLevelElement.lv34;
+    } else if (count >= BigInt.from((3600 * 24 * 7 * 35) + 1) &&
+        count <= BigInt.from((3600 * 24 * 7 * 36))) {
+      return WoodenFishLevelElement.lv35;
+    } else if (count >= BigInt.from((3600 * 24 * 7 * 36) + 1) &&
+        count <= BigInt.from((3600 * 24 * 7 * 37))) {
+      return WoodenFishLevelElement.lv36;
+    } else if (count >= BigInt.from((3600 * 24 * 7 * 37) + 1) &&
+        count <= BigInt.from((3600 * 24 * 7 * 38))) {
+      return WoodenFishLevelElement.lv37;
+    } else if (count >= BigInt.from((3600 * 24 * 7 * 38) + 1) &&
+        count <= BigInt.from((3600 * 24 * 7 * 39))) {
+      return WoodenFishLevelElement.lv38;
+    } else if (count >= BigInt.from((3600 * 24 * 7 * 39) + 1) &&
+        count <= BigInt.from((3600 * 24 * 7 * 40))) {
+      return WoodenFishLevelElement.lv39;
+    } else if (count >= BigInt.from((3600 * 24 * 7 * 40) + 1) &&
+        count <= BigInt.from((3600 * 24 * 7 * 41))) {
+      return WoodenFishLevelElement.lv40;
+    } else if (count >= BigInt.from((3600 * 24 * 7 * 41) + 1) &&
+        count <= BigInt.from((3600 * 24 * 7 * 42))) {
+      return WoodenFishLevelElement.lv41;
+    } else if (count >= BigInt.from((3600 * 24 * 7 * 42) + 1) &&
+        count <= BigInt.from((3600 * 24 * 7 * 43))) {
+      return WoodenFishLevelElement.lv42;
+    } else if (count >= BigInt.from((3600 * 24 * 7 * 43) + 1) &&
+        count <= BigInt.from((3600 * 24 * 7 * 44))) {
+      return WoodenFishLevelElement.lv43;
+    } else if (count >= BigInt.from((3600 * 24 * 7 * 44) + 1) &&
+        count <= BigInt.from((3600 * 24 * 7 * 45))) {
+      return WoodenFishLevelElement.lv44;
+    } else if (count >= BigInt.from((3600 * 24 * 7 * 45) + 1) &&
+        count <= BigInt.from((3600 * 24 * 7 * 46))) {
+      return WoodenFishLevelElement.lv45;
+    } else if (count >= BigInt.from((3600 * 24 * 7 * 46) + 1) &&
+        count <= BigInt.from((3600 * 24 * 7 * 47))) {
+      return WoodenFishLevelElement.lv46;
+    } else if (count >= BigInt.from((3600 * 24 * 7 * 47) + 1) &&
+        count <= BigInt.from((3600 * 24 * 7 * 48))) {
+      return WoodenFishLevelElement.lv47;
+    } else if (count >= BigInt.from((3600 * 24 * 7 * 48) + 1) &&
+        count <= BigInt.from((3600 * 24 * 7 * 49))) {
+      return WoodenFishLevelElement.lv48;
+    } else if (count >= BigInt.from((3600 * 24 * 7 * 49) + 1) &&
+        count <= BigInt.from((3600 * 24 * 7 * 50))) {
+      return WoodenFishLevelElement.lv49;
+    } else if (count >= BigInt.from((3600 * 24 * 7 * 50) + 1) &&
+        count <= BigInt.from((3600 * 24 * 7 * 51))) {
+      return WoodenFishLevelElement.lv50;
     } else {
-      return WoodenFishLevelElement.lv16;
+      return WoodenFishLevelElement.lv50;
     }
   }
 
@@ -866,7 +1007,7 @@ class WoodenFishUtil {
             levelName = '金剛不壞佛 (佛)';
             break;
           case WoodenFishLevelElement.lv50:
-            levelName = '釋迦牟尼佛 (佛)';
+            levelName = '釋迦牟尼佛 (萬佛朝宗)';
             break;
 
           default:

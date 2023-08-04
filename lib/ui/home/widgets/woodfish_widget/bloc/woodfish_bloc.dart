@@ -36,7 +36,7 @@ class WoodFishWidgetBloc
   void _init(
       WoodenFishInitEvent event, Emitter<WoodFishWidgetState> emit) async {
     state.setting = _woodenRepository.getSetting();
-
+    state.totalCount = BigInt.parse(state.setting.totalCount);
     state.bgColor = WoodenFishUtil.internal()
         .getColorFromString(state.setting.woodenFishBg);
     var prayAvatarPhoto =
@@ -78,6 +78,8 @@ class WoodFishWidgetBloc
 
     //accumulation
     state.totalCount += BigInt.from(1);
+    state.setting.totalCount = "${state.totalCount}";
+
     state.currentCount++;
 
     //get level
@@ -177,7 +179,7 @@ class WoodFishWidgetBloc
     _woodenRepository.saveAutoKnockSetting(state.autoKnockSetting);
 
     //dev
-    //_woodenRepository.saveSetting(state.setting);
+    _woodenRepository.saveSetting(state.setting);
 
     //Knock once per second
     state.woodenFishProgress = true;

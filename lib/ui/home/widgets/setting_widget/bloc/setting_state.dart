@@ -13,6 +13,7 @@ class SettingWidgetState {
   late String version;
   late List<StepperData> stepperData;
   late int currentStepperInt;
+  late bool isDisplayLevelList;
 
   SettingWidgetState init() {
     return SettingWidgetState()
@@ -35,7 +36,9 @@ class SettingWidgetState {
       ..photoLoadingStatus = PhotoLoadStatus.init
       ..version = ''
       ..stepperData = []
-      ..currentStepperInt = 0;
+      ..currentStepperInt = 0
+      ..isDisplayLevelList = false;
+    ;
   }
 
   SettingWidgetState clone() {
@@ -47,6 +50,7 @@ class SettingWidgetState {
       ..photoLoadingStatus = photoLoadingStatus
       ..version = version
       ..stepperData = stepperData
-      ..currentStepperInt = currentStepperInt;
+      ..currentStepperInt = currentStepperInt
+      ..isDisplayLevelList = isDisplayLevelList;
   }
 }

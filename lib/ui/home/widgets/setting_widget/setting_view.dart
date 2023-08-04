@@ -10,6 +10,7 @@ import 'package:woodenfish_bloc/ui/home/widgets/woodfish_widget/bloc/woodfish_ev
     as wood_fish_b;
 import 'package:woodenfish_bloc/utils/alert_dialog.dart';
 import 'package:woodenfish_bloc/utils/route_paths.dart';
+import 'package:woodenfish_bloc/utils/wooden_fish_util.dart';
 
 import 'bloc/setting_bloc.dart';
 import 'bloc/setting_event.dart';
@@ -55,37 +56,42 @@ class _SettingWidgetPageState extends State<SettingWidgetPage> {
 
     return BlocConsumer<SettingWidgetBloc, SettingWidgetState>(
         listener: (context, state) {
-      showDialog(
-          barrierDismissible: false,
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              backgroundColor: Colors.transparent,
-              //contentPadding: const EdgeInsets.all(30),
-              content: Container(
-                color: Colors.white,
-                child: Stack(clipBehavior: Clip.none, children: [
-                  LevelInfoView(
-                    state: state,
-                  ),
-                  Positioned(
-                    right: -15.0,
-                    top: -15.0,
-                    child: InkWell(
-                      onTap: () {
-                        Navigator.of(context).pop();
-                      },
-                      child: const CircleAvatar(
-                        radius: 15,
-                        backgroundColor: Colors.red,
-                        child: Icon(Icons.close),
+      state.isDisplayLevelList
+          ? showDialog(
+              barrierDismissible: false,
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  backgroundColor: Colors.transparent,
+                  //contentPadding: const EdgeInsets.all(30),
+                  content: Container(
+                    color: Colors.transparent,
+                    child: Stack(children: [
+                      LevelInfoView(
+                        state: state,
                       ),
-                    ),
+                      Positioned(
+                        right: 0.0,
+                        top: 0.0,
+                        child: InkWell(
+                          splashColor: Colors.transparent,
+                          highlightColor: Colors.transparent,
+                          onTap: () {
+                            Navigator.of(context).pop();
+                            state.isDisplayLevelList = false;
+                          },
+                          child: const CircleAvatar(
+                            radius: 15,
+                            backgroundColor: Colors.red,
+                            child: Icon(Icons.close),
+                          ),
+                        ),
+                      ),
+                    ]),
                   ),
-                ]),
-              ),
-            );
-          });
+                );
+              })
+          : const SizedBox();
     }, builder: (context, state) {
       return BlocBuilder<SettingWidgetBloc, SettingWidgetState>(
           builder: (context, state) {
@@ -104,6 +110,8 @@ class _SettingWidgetPageState extends State<SettingWidgetPage> {
         }
 
         print('state level = ${state.setting.level}');
+        state.levelName = WoodenFishUtil.internal()
+            .getLevelNameElementFromString(state.setting.level);
 
         return Scaffold(
           backgroundColor: const Color(0xFFF5F6F9),

@@ -20,7 +20,7 @@ LocalSetting _$SettingFromJson(Map<String, dynamic> json) => LocalSetting(
       isSetPrayPhoto: json['isSetPrayPhoto'] as bool? ?? false,
       userName: json['userName'] as String? ?? "靜心小僧",
       level: json['level'] as String? ?? "WoodenFishLevelElement.lv01",
-      totalCount: json['totalCount'] as int? ?? 0,
+      totalCount: json['totalCount'] as String? ?? "0",
     );
 
 Map<String, dynamic> _$SettingToJson(LocalSetting instance) =>

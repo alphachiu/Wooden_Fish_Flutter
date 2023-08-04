@@ -95,24 +95,40 @@ class SettingWidgetBloc extends Bloc<SettingWidgetEvent, SettingWidgetState> {
 
   void _reviewLevelStepper(
       ReviewLevelStepperEvent event, Emitter<SettingWidgetState> emit) async {
-    var level = WoodenFishUtil.internal()
-        .getLevelElementFromKnockCount(BigInt.from(state.setting.totalCount))
-        .toString();
-
-    state.currentStepperInt = int.parse(level.split("lv")[1].padLeft(1, '2'));
-    print('currentStepper = ${state.currentStepperInt}');
+    // var level = WoodenFishUtil.internal()
+    //     .getLevelElementFromKnockCount(BigInt.from(state.setting.totalCount))
+    //     .toString();
+    state.isDisplayLevelList = true;
+    state.currentStepperInt =
+        int.parse(state.setting.level.split("lv")[1].padLeft(1, '2'));
 
     state.stepperData = [];
 
     for (WoodenFishLevelElement element in WoodenFishLevelElement.values) {
       var name = WoodenFishUtil.internal()
           .getLevelNameElementFromString(element.toString());
-      print('state.levelName = ${state.levelName}');
-      Color? currentTextColor =
-          (state.levelName != name) ? Colors.grey : Colors.black;
-      Color? currentIconColor =
-          (state.levelName != name) ? Colors.grey : Colors.green;
-      var currentLevelText = (state.levelName != name) ? "" : "修行已到達";
+      var lvInt = int.parse(element.toString().split("lv")[1].padLeft(1, '2'));
+
+      Color? currentTextColor = (state.levelName != name)
+          ? (state.currentStepperInt < lvInt)
+              ? Colors.grey
+              : Colors.black
+          : Colors.black;
+
+      Color? currentIconColor = (state.currentStepperInt >= lvInt)
+          ? const Color(0xff37CACF)
+          : Colors.grey;
+
+      Color? subTitleTextColor =
+          (lvInt < state.currentStepperInt) ? Colors.grey : Colors.red;
+
+      var currentLevelText = (state.levelName != name)
+          ? (state.currentStepperInt > lvInt)
+              ? "已達到修行"
+              : ""
+          : lvInt == 50
+              ? "已達到最高境界"
+              : "目前還在修行中...";
 
       var data = StepperData(
           title: StepperText(
@@ -121,12 +137,21 @@ class SettingWidgetBloc extends Bloc<SettingWidgetEvent, SettingWidgetState> {
               color: currentTextColor,
             ),
           ),
-          subtitle: StepperText(currentLevelText),
+          subtitle: StepperText(
+            currentLevelText,
+            textStyle: TextStyle(
+              color: subTitleTextColor,
+            ),
+          ),
           iconWidget: Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
                 color: currentIconColor,
                 borderRadius: const BorderRadius.all(Radius.circular(30))),
+            child: const Icon(
+              Icons.radio_button_checked_sharp,
+              color: Colors.white,
+            ),
           ));
 
       state.stepperData.add(data);

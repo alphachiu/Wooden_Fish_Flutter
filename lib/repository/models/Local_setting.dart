@@ -9,7 +9,7 @@ class LocalSetting {
   LocalSetting(
       {this.isDisplay = true,
       this.isVibration = true,
-      this.displayWord = "+1",
+      this.displayWord = "祈禱",
       this.autoSpeed = 1,
       this.woodenFishBg = "WoodenFishBgElement.none",
       this.woodenFishSkin = "WoodenFishSkinElement.wood",
@@ -17,7 +17,7 @@ class LocalSetting {
       this.isSetPrayPhoto = false,
       this.userName = "靜心小僧",
       this.level = "WoodenFishLevelElement.lv01",
-      this.totalCount = 0});
+      this.totalCount = "0"});
 
   bool isDisplay; //display pray word
   bool isVibration; //vibration
@@ -29,7 +29,7 @@ class LocalSetting {
   String woodenFishSound; //sound category
   String userName; //set user name
   String level; // set level
-  int totalCount; // total knock count
+  String totalCount; // total knock count
 
   factory LocalSetting.fromJson(Map<String, dynamic> json) =>
       _$SettingFromJson(json);
