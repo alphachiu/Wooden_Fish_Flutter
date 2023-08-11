@@ -8,7 +8,7 @@ class AutoKnockSetting {
     this.autoStopType = AutoStop.count,
     this.autoStopTimeType = AutoStopTime.none,
     this.limitCount = 0,
-    this.currentCount = 0,
+    this.currentKnockCount = 0,
     this.countDownSecond = 0,
   });
 
@@ -16,6 +16,6 @@ class AutoKnockSetting {
   AutoStop autoStopType;
   AutoStopTime autoStopTimeType;
   int limitCount;
-  int currentCount; // Use for auto stop count
+  int currentKnockCount; // Use for auto stop count
   int countDownSecond;
 }

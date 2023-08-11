@@ -73,7 +73,6 @@ class _WoodFishWidgetPageState extends State<WoodFishWidgetPage>
     return BlocConsumer<WoodFishWidgetBloc, WoodFishWidgetState>(
         listener: (context, state) {
       print('Wood fish listener');
-      print('PrayPhotoLoadStatus =  ${state.photoLoadingStatus}');
       if (state.photoLoadingStatus == PhotoLoadStatus.fail) {
         showAlertDialog(context,
             cancelActionText: '',

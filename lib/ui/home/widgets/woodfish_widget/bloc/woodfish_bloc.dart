@@ -55,7 +55,8 @@ class WoodFishWidgetBloc
     print('is open auto stop = ${autoKnockSetting.isAutoStop}');
     print('autoKnockSetting.type = ${autoKnockSetting.autoStopType}');
     print('autoKnockSetting.limitCount = ${autoKnockSetting.limitCount}');
-    print('autoKnockSetting.currentCount = ${autoKnockSetting.currentCount}');
+    print(
+        'autoKnockSetting.currentCount = ${autoKnockSetting.currentKnockCount}');
 
     // AutoStop.count
     if (autoKnockSetting.isAutoStop &&
@@ -68,7 +69,8 @@ class WoodFishWidgetBloc
     //check return condition
     if ((autoKnockSetting.isAutoStop &&
             autoKnockSetting.autoStopType == AutoStop.count &&
-            autoKnockSetting.limitCount == autoKnockSetting.currentCount) ||
+            autoKnockSetting.limitCount ==
+                autoKnockSetting.currentKnockCount) ||
         (autoKnockSetting.isAutoStop &&
             autoKnockSetting.autoStopType == AutoStop.countDown &&
             autoKnockSetting.countDownSecond == 0)) {
@@ -89,7 +91,7 @@ class WoodFishWidgetBloc
 
     //save autoKnockSettingInfo
     state.autoKnockSetting = autoKnockSetting;
-    state.autoKnockSetting.currentCount = state.currentCount;
+    state.autoKnockSetting.currentKnockCount = state.currentCount;
     print('state.autoKnockSetting.currentCount = ${state.currentCount}');
 
     //get setting
@@ -118,6 +120,7 @@ class WoodFishWidgetBloc
           .contains("佛");
 
       KnockTextWidget knockWidget = KnockTextWidget(
+          key: ValueKey("${autoKnockSetting.currentKnockCount}"),
           isTopGod: isTopGodLevel,
           childWidget: Flexible(
             child: (state.setting.woodenFishBg != "WoodenFishBgElement.none")
@@ -158,11 +161,12 @@ class WoodFishWidgetBloc
                     style: TextStyle(fontSize: 30, color: textColor),
                   ),
           ),
-          onRemove: (widget) async {
-            await _removeWidget(widget);
+          onRemove: (key) async {
+            await _removeWidget(key);
           });
 
       _knockAnimationWidgets.add(Stack(
+        key: ValueKey("${autoKnockSetting.currentKnockCount}"),
         children: [knockWidget],
       ));
       state.knockAnimationWidgets = _knockAnimationWidgets;
@@ -170,7 +174,7 @@ class WoodFishWidgetBloc
 
     if ((state.autoKnockSetting.isAutoStop &&
         state.autoKnockSetting.autoStopType == AutoStop.count &&
-        state.autoKnockSetting.currentCount <=
+        state.autoKnockSetting.currentKnockCount <=
             state.autoKnockSetting.limitCount)) {
       print('state.currentCount = ${state.currentCount}');
       event.btTabBar.add(CurrentCountEvent(count: state.currentCount));
@@ -247,11 +251,9 @@ class WoodFishWidgetBloc
     }
   }
 
-  Future<void> _removeWidget(KnockTextWidget widget) async {
-    if (widget.onRemove != null) {
-      print('_removeWidget');
-      _knockAnimationWidgets.remove(widget);
-      state.knockAnimationWidgets = _knockAnimationWidgets;
-    }
+  Future<void> _removeWidget(Key key) async {
+    _knockAnimationWidgets.removeWhere((element) => element.key == key);
+    print('knockAnimationWidgets length = ${_knockAnimationWidgets.length}');
+    state.knockAnimationWidgets = _knockAnimationWidgets;
   }
 }

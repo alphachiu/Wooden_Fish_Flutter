@@ -11,7 +11,7 @@ class KnockTextWidget extends StatefulWidget {
 
   Widget? childWidget;
   bool isTopGod;
-  Function(KnockTextWidget knock)? onRemove;
+  Function(Key key)? onRemove;
 
   @override
   State<KnockTextWidget> createState() => _KnockTextWidgetState();
@@ -19,8 +19,9 @@ class KnockTextWidget extends StatefulWidget {
 
 class _KnockTextWidgetState extends State<KnockTextWidget>
     with TickerProviderStateMixin {
-  late AnimationController _animationController;
+  late AnimationController _curveAnimationController;
   late AnimationController _rotationAnimationController;
+  late AnimationController _opacityAnimationController;
   late Animation<double> _opacityAnimation;
   late Animation<Offset> _slideAnimation;
   late Animation<double> _curveAnimation;
@@ -31,7 +32,7 @@ class _KnockTextWidgetState extends State<KnockTextWidget>
   void initState() {
     super.initState();
 
-    _animationController = AnimationController(
+    _curveAnimationController = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 5),
     );
@@ -40,11 +41,16 @@ class _KnockTextWidgetState extends State<KnockTextWidget>
       duration: const Duration(seconds: 3),
     );
 
-    _curveAnimation = CurvedAnimation(
-        parent: _animationController, curve: Curves.fastOutSlowIn);
+    _opacityAnimationController = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 1),
+    );
 
-    _opacityAnimation =
-        Tween<double>(begin: 1.0, end: 0.0).animate(_animationController);
+    _curveAnimation = CurvedAnimation(
+        parent: _curveAnimationController, curve: Curves.fastOutSlowIn);
+
+    _opacityAnimation = Tween<double>(begin: 1.0, end: 0.0)
+        .animate(_opacityAnimationController);
     var rng = Random();
     var x = rng.nextInt(20).toDouble();
     var y = rng.nextInt(80).toDouble();
@@ -59,15 +65,13 @@ class _KnockTextWidgetState extends State<KnockTextWidget>
     _scaleAnimation = Tween(begin: 1.0, end: widget.isTopGod ? 2.0 : 1.0)
         .animate(_rotationAnimationController);
 
-    _animationController.forward();
+    _curveAnimationController.forward();
     _rotationAnimationController.forward();
+    _opacityAnimationController.forward();
 
     _curveAnimation.addStatusListener((status) {
       if (status == AnimationStatus.completed) {
-        print('_animation finish');
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          widget.onRemove?.call(widget);
-        });
+        widget.onRemove?.call(widget.key!);
       }
     });
   }
@@ -76,25 +80,25 @@ class _KnockTextWidgetState extends State<KnockTextWidget>
   void didUpdateWidget(covariant KnockTextWidget oldWidget) {
     // TODO: implement didUpdateWidget
     super.didUpdateWidget(oldWidget);
-    _animationController.forward(from: 0.0);
+    _curveAnimationController.forward(from: 0.0);
     _rotationAnimationController.forward(from: 0.0);
+    _opacityAnimationController.forward(from: 0.0);
   }
 
   @override
   void dispose() {
-    _animationController.dispose();
+    super.dispose();
+    _curveAnimationController.dispose();
     _rotationAnimationController.dispose();
+    _opacityAnimationController.dispose();
     widget.childWidget = null;
     widget.onRemove = null;
-
-    super.dispose();
-    print("knock dispose");
   }
 
   @override
   Widget build(BuildContext context) {
     return AnimatedBuilder(
-      animation: _animationController,
+      animation: _curveAnimationController,
       builder: (context, child) {
         return Opacity(
           opacity: _opacityAnimation.value,

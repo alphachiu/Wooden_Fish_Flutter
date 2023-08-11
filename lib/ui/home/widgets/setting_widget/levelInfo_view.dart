@@ -31,6 +31,7 @@ class _LevelInfoViewState extends State<LevelInfoView> {
       color: Colors.transparent,
       padding: const EdgeInsets.only(right: 20, left: 20, top: 20),
       child: SingleChildScrollView(
+        physics: const ClampingScrollPhysics(),
         child: Container(
           color: Colors.white,
           padding: const EdgeInsets.only(right: 20, left: 20),

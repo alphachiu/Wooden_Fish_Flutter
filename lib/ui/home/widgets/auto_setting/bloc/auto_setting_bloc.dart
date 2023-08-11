@@ -46,7 +46,7 @@ class AutoSettingBloc extends Bloc<AutoSettingEvent, AutoSettingState> {
       state.autoKnockSetting.autoStopTimeType = AutoStopTime.none;
       state.autoKnockSetting.autoStopType = AutoStop.count;
       state.autoKnockSetting.limitCount = 0;
-      state.autoKnockSetting.currentCount = 0;
+      state.autoKnockSetting.currentKnockCount = 0;
       state.autoKnockSetting.countDownSecond = 0;
 
       state.autoStopType = AutoStop.count;
