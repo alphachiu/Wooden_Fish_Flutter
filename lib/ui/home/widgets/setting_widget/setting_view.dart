@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:grouped_list/grouped_list.dart';
 import 'package:woodenfish_bloc/repository/models/setting_model.dart';
 import 'package:woodenfish_bloc/repository/wooden_repository.dart';
@@ -12,6 +13,7 @@ import 'package:woodenfish_bloc/utils/alert_dialog.dart';
 import 'package:woodenfish_bloc/utils/route_paths.dart';
 import 'package:woodenfish_bloc/utils/wooden_fish_util.dart';
 
+import '../../../../repository/ads_repository.dart';
 import 'bloc/setting_bloc.dart';
 import 'bloc/setting_event.dart';
 import 'bloc/setting_state.dart';
@@ -45,7 +47,8 @@ class _SettingWidgetPageState extends State<SettingWidgetPage> {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (BuildContext context) => SettingWidgetBloc(
-          woodenRepository: RepositoryProvider.of<WoodenRepository>(context))
+          woodenRepository: RepositoryProvider.of<WoodenRepository>(context),
+          adsRepository: RepositoryProvider.of<AdsRepository>(context))
         ..add(InitEvent()),
       child: Builder(builder: (context) => _buildPage(context)),
     );
@@ -371,7 +374,29 @@ class _SettingWidgetPageState extends State<SettingWidgetPage> {
                             const SizedBox(
                               height: 30,
                             ),
-                            Text('Version: ${state.version}')
+                            !state.nativeAdIsLoaded
+                                ? Align(
+                                    alignment: Alignment.center,
+                                    child: Container(
+                                      color: Colors.white,
+                                      child: ConstrainedBox(
+                                        constraints: BoxConstraints(
+                                          minWidth: 300,
+                                          minHeight: 120,
+                                          maxHeight: 150,
+                                          maxWidth: MediaQuery.of(context)
+                                                  .size
+                                                  .width -
+                                              (2 * 16),
+                                        ),
+                                        child: AdWidget(ad: state.nativeAd!),
+                                      ),
+                                    ))
+                                : const SizedBox(),
+                            const SizedBox(
+                              height: 30,
+                            ),
+                            Text('Version: ${state.version}'),
                           ],
                         ),
                       ))

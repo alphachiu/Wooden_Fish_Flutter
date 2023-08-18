@@ -86,8 +86,8 @@ class BottomTabBarBloc extends Bloc<BottomTabBarEvent, BottomTabBarState> {
         state.oldCountDownType = event.timeType;
         break;
       case AutoStopTime.five:
-        //second = 5 * 60;
-        second = 5;
+        second = 5 * 60;
+        //second = 5;
         break;
       case AutoStopTime.ten:
         second = 10 * 60;

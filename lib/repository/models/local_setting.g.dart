@@ -7,7 +7,7 @@ part of 'Local_setting.dart';
 // **************************************************************************
 
 LocalSetting _$SettingFromJson(Map<String, dynamic> json) => LocalSetting(
-      isDisplay: json['isDisplay'] as bool? ?? true,
+      isDisplayPrayWord: json['isDisplay'] as bool? ?? true,
       isVibration: json['isVibration'] as bool? ?? true,
       displayWord: json['displayWord'] as String? ?? "+1",
       autoSpeed: json['autoSpeed'] as double? ?? 0.5,
@@ -25,7 +25,7 @@ LocalSetting _$SettingFromJson(Map<String, dynamic> json) => LocalSetting(
 
 Map<String, dynamic> _$SettingToJson(LocalSetting instance) =>
     <String, dynamic>{
-      'isDisplay': instance.isDisplay,
+      'isDisplay': instance.isDisplayPrayWord,
       'isVibration': instance.isVibration,
       'displayWord': instance.displayWord,
       'autoSpeed': instance.autoSpeed,

@@ -1,5 +1,6 @@
 import 'package:another_stepper/another_stepper.dart';
 import 'package:flutter/material.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:woodenfish_bloc/repository/models/Local_setting.dart';
 import 'package:woodenfish_bloc/repository/models/setting_model.dart';
 import 'package:woodenfish_bloc/utils/wooden_fish_util.dart';
@@ -14,6 +15,8 @@ class SettingWidgetState {
   late List<StepperData> stepperData;
   late int currentStepperInt;
   late bool isDisplayLevelList;
+  late NativeAd? nativeAd;
+  late bool nativeAdIsLoaded;
 
   SettingWidgetState init() {
     return SettingWidgetState()
@@ -37,8 +40,8 @@ class SettingWidgetState {
       ..version = ''
       ..stepperData = []
       ..currentStepperInt = 0
-      ..isDisplayLevelList = false;
-    ;
+      ..isDisplayLevelList = false
+      ..nativeAdIsLoaded = true;
   }
 
   SettingWidgetState clone() {
@@ -51,6 +54,8 @@ class SettingWidgetState {
       ..version = version
       ..stepperData = stepperData
       ..currentStepperInt = currentStepperInt
-      ..isDisplayLevelList = isDisplayLevelList;
+      ..isDisplayLevelList = isDisplayLevelList
+      ..nativeAd = nativeAd
+      ..nativeAdIsLoaded = nativeAdIsLoaded;
   }
 }

@@ -5,11 +5,14 @@ import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:woodenfish_bloc/repository/ads_repository.dart';
 import 'package:woodenfish_bloc/repository/models/auto_knock_setting.dart';
 import 'package:woodenfish_bloc/repository/models/setting_model.dart';
 import 'package:woodenfish_bloc/repository/wooden_repository.dart';
 import 'package:woodenfish_bloc/ui/home/page/bottom_tabbar/bloc/bottom_tabbar_event.dart';
+import 'package:woodenfish_bloc/ui/home/widgets/woodfish_widget/add_reward_text.dart';
 import 'package:woodenfish_bloc/ui/home/widgets/woodfish_widget/knock_text_widget.dart';
 import 'package:woodenfish_bloc/utils/alert_dialog.dart';
 import 'package:woodenfish_bloc/utils/audio_play_util.dart';
@@ -19,8 +22,11 @@ import 'woodfish_state.dart';
 
 class WoodFishWidgetBloc
     extends Bloc<WoodFishWidgetEvent, WoodFishWidgetState> {
-  WoodFishWidgetBloc({required WoodenRepository woodenRepository})
+  WoodFishWidgetBloc(
+      {required WoodenRepository woodenRepository,
+      required AdsRepository adsRepository})
       : _woodenRepository = woodenRepository,
+        _adsRepository = adsRepository,
         super(WoodFishWidgetState().init()) {
     on<WoodenFishInitEvent>(_init);
     on<IncrementEvent>(_increment);
@@ -30,6 +36,7 @@ class WoodFishWidgetBloc
   }
 
   final WoodenRepository _woodenRepository;
+  final AdsRepository _adsRepository;
   final List<Widget> _knockAnimationWidgets = [];
   late Timer autoKnockTimer;
 
@@ -44,6 +51,9 @@ class WoodFishWidgetBloc
     if (prayAvatarPhoto != null) {
       state.prayPhoto = prayAvatarPhoto;
     }
+
+    state.bannerAd = await _adsRepository.getBannerAd();
+    state.nativeAdIsLoaded = false;
 
     emit(state.clone());
   }
@@ -78,6 +88,45 @@ class WoodFishWidgetBloc
       return;
     }
 
+    //Show AD
+    Duration duration = DateTime.now().difference(state.autoOpenTime);
+    print('minutes ad = ${duration.inMinutes}');
+    if (duration.inMinutes >= state.limitTime &&
+        state.isAuto &&
+        !state.isDisplayAd) {
+      state.isDisplayAd = true;
+      await _adsRepository.getRewardedInterstitialAd(getReward: () {
+        print('get reward');
+
+        state.isGetRewardAd = true;
+      }, closeAd: () {
+        state.isDisplayAd = false;
+        state.autoOpenTime = DateTime.now();
+        state.totalCount += BigInt.from(state.rewardPoint);
+
+        if (state.isGetRewardAd) {
+          state.addRewardText = AddRewardText(
+              key: ValueKey("${autoKnockSetting.currentKnockCount}"),
+              childWidget: Text(
+                '+ ${state.rewardPoint}',
+                style: TextStyle(
+                    fontSize: 30.0,
+                    foreground: Paint()
+                      ..color = Colors.yellow
+                      ..style = PaintingStyle.stroke
+                      ..strokeWidth = 2),
+              ),
+              onRemove: (key) async {
+                state.addRewardText = null;
+                state.isGetRewardAd = false;
+              });
+        }
+      });
+    }
+
+    //get setting
+    state.setting = _woodenRepository.getSetting();
+
     //accumulation
     state.totalCount += BigInt.from(1);
     state.setting.totalCount = "${state.totalCount}";
@@ -95,81 +144,23 @@ class WoodFishWidgetBloc
     print('state.autoKnockSetting.currentCount = ${state.currentCount}');
 
     //get setting
-    state.setting = _woodenRepository.getSetting();
+    //state.setting = _woodenRepository.getSetting();
 
     //check Vibration
     if (state.setting.isVibration) {
       await HapticFeedback.vibrate();
     }
 
-    //check Display
-    if (state.setting.isDisplay) {
-      var soundPathName = WoodenFishUtil.internal()
-          .getSoundNameFromString(state.setting.woodenFishSound);
-      AudioPlayUtil().stop();
-      await AudioPlayUtil().play(soundPathName);
+    //play sound
+    var soundPathName = WoodenFishUtil.internal()
+        .getSoundNameFromString(state.setting.woodenFishSound);
+    AudioPlayUtil().stop();
+    await AudioPlayUtil().play(soundPathName);
 
-      var textColor = WoodenFishUtil.internal()
-          .getKnockTextColorFromString(state.setting.woodenFishBg);
-      var levelElement = WoodenFishUtil.internal()
-          .getLevelElementFromString(state.setting.level);
-      var gradient =
-          WoodenFishUtil.internal().getLinearGradientFrom(levelElement!);
-      var isTopGodLevel = WoodenFishUtil.internal()
-          .getLevelNameElementFromString(state.setting.level)
-          .contains("佛");
-
-      KnockTextWidget knockWidget = KnockTextWidget(
-          key: ValueKey("${autoKnockSetting.currentKnockCount}"),
-          isTopGod: isTopGodLevel,
-          childWidget: Flexible(
-            child: (state.setting.woodenFishBg != "WoodenFishBgElement.none")
-
-                ///when bg is none
-                ? Stack(
-                    children: [
-                      ShaderMask(
-                        blendMode: BlendMode.srcATop,
-                        shaderCallback: (bounds) {
-                          return gradient.createShader(bounds);
-                        },
-                        child: isTopGodLevel
-                            ? Text(
-                                state.setting.displayWord,
-                                style: TextStyle(
-                                    fontSize: 30.0,
-                                    foreground: Paint()
-                                      ..style = PaintingStyle.stroke
-                                      ..strokeWidth = 2),
-                              )
-                            : const SizedBox(),
-                      ),
-                      ShaderMask(
-                        blendMode: BlendMode.srcATop,
-                        shaderCallback: (bounds) {
-                          return gradient.createShader(bounds);
-                        },
-                        child: Text(
-                          state.setting.displayWord,
-                          style: const TextStyle(fontSize: 30),
-                        ),
-                      ),
-                    ],
-                  )
-                : Text(
-                    state.setting.displayWord,
-                    style: TextStyle(fontSize: 30, color: textColor),
-                  ),
-          ),
-          onRemove: (key) async {
-            await _removeWidget(key);
-          });
-
-      _knockAnimationWidgets.add(Stack(
-        key: ValueKey("${autoKnockSetting.currentKnockCount}"),
-        children: [knockWidget],
-      ));
-      state.knockAnimationWidgets = _knockAnimationWidgets;
+    //check DisplayPrayWord
+    if (state.setting.isDisplayPrayWord && !state.isDisplayAd) {
+      await _createKnockWidget(
+          autoKnockSetting, autoKnockSetting.currentKnockCount);
     }
 
     if ((state.autoKnockSetting.isAutoStop &&
@@ -182,7 +173,7 @@ class WoodFishWidgetBloc
 
     _woodenRepository.saveAutoKnockSetting(state.autoKnockSetting);
 
-    //dev
+    //save setting
     _woodenRepository.saveSetting(state.setting);
 
     //Knock once per second
@@ -192,19 +183,21 @@ class WoodFishWidgetBloc
       await Future.delayed(const Duration(milliseconds: 300));
     }
     state.woodenFishProgress = false;
+
     emit(state.clone());
   }
 
   void _isAutoEvent(IsAutoEvent event, Emitter<WoodFishWidgetState> emit) {
+    state.autoOpenTime = DateTime.now();
     state.isAuto = event.isAuto;
 
     emit(state.clone());
   }
 
-  void _changeWoodenFishStateEvent(
-      ChangWoodenFishStateEvent event, Emitter<WoodFishWidgetState> emit) {
+  void _changeWoodenFishStateEvent(ChangWoodenFishStateEvent event,
+      Emitter<WoodFishWidgetState> emit) async {
     state.setting = _woodenRepository.getSetting();
-
+    state.bannerAd = await _adsRepository.getBannerAd();
     emit(state.clone());
   }
 
@@ -249,6 +242,73 @@ class WoodFishWidgetBloc
     } on FormatException catch (e) {
       state.photoLoadingStatus = PhotoLoadStatus.finish;
     }
+  }
+
+  Future<void> _createKnockWidget(
+      AutoKnockSetting autoKnockSetting, int keyCount) async {
+    var textColor = WoodenFishUtil.internal()
+        .getKnockTextColorFromString(state.setting.woodenFishBg);
+    var levelElement = WoodenFishUtil.internal()
+        .getLevelElementFromString(state.setting.level);
+    var gradient =
+        WoodenFishUtil.internal().getLinearGradientFrom(levelElement!);
+    var isTopGodLevel = WoodenFishUtil.internal()
+        .getLevelNameElementFromString(state.setting.level)
+        .contains("佛");
+
+    var key = ObjectKey('$keyCount');
+
+    KnockTextWidget knockWidget = KnockTextWidget(
+        key: key,
+        isTopGod: isTopGodLevel,
+        childWidget: Flexible(
+          child: (state.setting.woodenFishBg != "WoodenFishBgElement.none")
+
+              ///when bg is none
+              ? Stack(
+                  children: [
+                    ShaderMask(
+                      blendMode: BlendMode.srcATop,
+                      shaderCallback: (bounds) {
+                        return gradient.createShader(bounds);
+                      },
+                      child: isTopGodLevel
+                          ? Text(
+                              state.setting.displayWord,
+                              style: TextStyle(
+                                  fontSize: 30.0,
+                                  foreground: Paint()
+                                    ..style = PaintingStyle.stroke
+                                    ..strokeWidth = 2),
+                            )
+                          : const SizedBox(),
+                    ),
+                    ShaderMask(
+                      blendMode: BlendMode.srcATop,
+                      shaderCallback: (bounds) {
+                        return gradient.createShader(bounds);
+                      },
+                      child: Text(
+                        state.setting.displayWord,
+                        style: const TextStyle(fontSize: 30),
+                      ),
+                    ),
+                  ],
+                )
+              : Text(
+                  state.setting.displayWord,
+                  style: TextStyle(fontSize: 30, color: textColor),
+                ),
+        ),
+        onRemove: (key) async {
+          await _removeWidget(key);
+        });
+
+    _knockAnimationWidgets.add(Stack(
+      key: key,
+      children: [knockWidget],
+    ));
+    state.knockAnimationWidgets = _knockAnimationWidgets;
   }
 
   Future<void> _removeWidget(Key key) async {

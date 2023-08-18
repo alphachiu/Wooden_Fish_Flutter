@@ -7,7 +7,7 @@ part 'local_setting.g.dart';
 @JsonSerializable()
 class LocalSetting {
   LocalSetting(
-      {this.isDisplay = true,
+      {this.isDisplayPrayWord = true,
       this.isVibration = true,
       this.displayWord = "祈禱",
       this.autoSpeed = 1,
@@ -19,7 +19,7 @@ class LocalSetting {
       this.level = "WoodenFishLevelElement.lv01",
       this.totalCount = "0"});
 
-  bool isDisplay; //display pray word
+  bool isDisplayPrayWord; //display pray word
   bool isVibration; //vibration
   String displayWord; // pray word
   double autoSpeed; // set auto knock speed

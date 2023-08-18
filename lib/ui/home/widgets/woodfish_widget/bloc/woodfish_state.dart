@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:woodenfish_bloc/repository/models/Local_setting.dart';
 import 'package:woodenfish_bloc/repository/models/auto_knock_setting.dart';
 import 'package:woodenfish_bloc/repository/models/setting_model.dart';
@@ -20,6 +21,14 @@ class WoodFishWidgetState {
   late Image prayPhoto;
   late PhotoLoadStatus photoLoadingStatus;
   late bool woodenFishProgress;
+  late BannerAd? bannerAd;
+  late bool nativeAdIsLoaded;
+  late DateTime autoOpenTime;
+  late int limitTime;
+  late bool isDisplayAd;
+  late bool isGetRewardAd;
+  late Widget? addRewardText;
+  late int rewardPoint;
 
   WoodFishWidgetState init() {
     return WoodFishWidgetState()
@@ -40,7 +49,14 @@ class WoodFishWidgetState {
       )
       ..prayPhotoName = 'prayAvatarPhoto.png'
       ..photoLoadingStatus = PhotoLoadStatus.init
-      ..woodenFishProgress = false;
+      ..woodenFishProgress = false
+      ..nativeAdIsLoaded = true
+      ..autoOpenTime = DateTime.now()
+      ..isDisplayAd = false
+      ..limitTime = 1
+      ..isGetRewardAd = false
+      ..addRewardText = null
+      ..rewardPoint = 100;
   }
 
   WoodFishWidgetState clone() {
@@ -57,6 +73,14 @@ class WoodFishWidgetState {
       ..prayPhoto = prayPhoto
       ..prayPhotoName = prayPhotoName
       ..photoLoadingStatus = photoLoadingStatus
-      ..woodenFishProgress = woodenFishProgress;
+      ..woodenFishProgress = woodenFishProgress
+      ..bannerAd = bannerAd
+      ..nativeAdIsLoaded = nativeAdIsLoaded
+      ..limitTime = limitTime
+      ..isDisplayAd = isDisplayAd
+      ..autoOpenTime = autoOpenTime
+      ..isGetRewardAd = isGetRewardAd
+      ..addRewardText = addRewardText
+      ..rewardPoint = rewardPoint;
   }
 }

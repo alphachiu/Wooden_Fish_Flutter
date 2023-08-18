@@ -7,12 +7,16 @@ import 'package:woodenfish_bloc/repository/models/setting_model.dart';
 import 'package:woodenfish_bloc/repository/wooden_repository.dart';
 import 'package:woodenfish_bloc/utils/wooden_fish_util.dart';
 
+import '../../../../../repository/ads_repository.dart';
 import 'setting_event.dart';
 import 'setting_state.dart';
 
 class SettingWidgetBloc extends Bloc<SettingWidgetEvent, SettingWidgetState> {
-  SettingWidgetBloc({required WoodenRepository woodenRepository})
+  SettingWidgetBloc(
+      {required WoodenRepository woodenRepository,
+      required AdsRepository adsRepository})
       : _woodenRepository = woodenRepository,
+        _adsRepository = adsRepository,
         super(SettingWidgetState().init()) {
     on<InitEvent>(_init);
     on<SwitchShowWordEvent>(_switchDisplay);
@@ -24,6 +28,7 @@ class SettingWidgetBloc extends Bloc<SettingWidgetEvent, SettingWidgetState> {
   }
 
   final WoodenRepository _woodenRepository;
+  final AdsRepository _adsRepository;
 
   void _init(InitEvent event, Emitter<SettingWidgetState> emit) async {
     state.setting = _woodenRepository.getSetting();
@@ -39,13 +44,15 @@ class SettingWidgetBloc extends Bloc<SettingWidgetEvent, SettingWidgetState> {
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
     state.version = packageInfo.version;
 
+    state.nativeAd = await _adsRepository.getNativeAd();
+    state.nativeAdIsLoaded = false;
     emit(state.clone());
   }
 
   void _switchDisplay(
       SwitchShowWordEvent event, Emitter<SettingWidgetState> emit) async {
     print('event.switchDisplay = ${event.switchDisplay}');
-    state.setting.isDisplay = event.switchDisplay;
+    state.setting.isDisplayPrayWord = event.switchDisplay;
     await _woodenRepository.saveSetting(state.setting);
     emit(state.clone());
   }

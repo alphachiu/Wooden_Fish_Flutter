@@ -4,6 +4,8 @@ import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:woodenfish_bloc/repository/ads_repository.dart';
 import 'package:woodenfish_bloc/repository/models/setting_model.dart';
 import 'package:woodenfish_bloc/repository/wooden_repository.dart';
 
@@ -31,9 +33,10 @@ class _WoodFishWidgetPageState extends State<WoodFishWidgetPage>
   @override
   void initState() {
     // TODO: implement initState
-    super.initState();
     WoodenFishUtil.internal().requestNotificationPermissions();
     WoodenFishUtil.internal().scheduleDailyTenAMNotification();
+
+    super.initState();
   }
 
   void startTimer(WoodFishWidgetBloc bloc, BottomTabBarBloc btTabBar) {
@@ -51,15 +54,17 @@ class _WoodFishWidgetPageState extends State<WoodFishWidgetPage>
   @override
   void dispose() {
     // TODO: implement dispose
-    super.dispose();
     stopAuto();
+
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (BuildContext context) => WoodFishWidgetBloc(
-          woodenRepository: RepositoryProvider.of<WoodenRepository>(context))
+          woodenRepository: RepositoryProvider.of<WoodenRepository>(context),
+          adsRepository: RepositoryProvider.of<AdsRepository>(context))
         ..add(WoodenFishInitEvent()),
       child: Builder(builder: (context) => _buildPage(context)),
     );
@@ -74,6 +79,7 @@ class _WoodFishWidgetPageState extends State<WoodFishWidgetPage>
         listener: (context, state) {
       print('Wood fish listener');
       if (state.photoLoadingStatus == PhotoLoadStatus.fail) {
+        state.photoLoadingStatus = PhotoLoadStatus.init;
         showAlertDialog(context,
             cancelActionText: '',
             content: 'Not Allow Photo Access',
@@ -132,17 +138,26 @@ class _WoodFishWidgetPageState extends State<WoodFishWidgetPage>
                                           const SizedBox(
                                             height: 10,
                                           ),
-                                          Text(
-                                            '累積敲 ${state.totalCount} 次',
-                                            overflow: TextOverflow.clip,
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 20.0,
-                                                color: state.bgColor ==
-                                                        Colors.white
-                                                    ? Colors.black
-                                                    : Colors.white),
-                                          ),
+                                          Row(
+                                            children: [
+                                              Text(
+                                                '累積敲 ${state.totalCount} 次',
+                                                overflow: TextOverflow.clip,
+                                                style: TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 20.0,
+                                                    color: state.bgColor ==
+                                                            Colors.white
+                                                        ? Colors.black
+                                                        : Colors.white),
+                                              ),
+                                              SizedBox(
+                                                width: 10,
+                                              ),
+                                              state.addRewardText ??
+                                                  const SizedBox()
+                                            ],
+                                          )
                                         ],
                                       ),
                                     ),
@@ -184,40 +199,74 @@ class _WoodFishWidgetPageState extends State<WoodFishWidgetPage>
                           ),
                         ), //MediaQuery.of(context).size.height
                         Expanded(
-                          flex: 1,
-                          child: Material(
-                            color: Colors.transparent,
-                            child: InkWell(
-                                highlightColor: Colors.transparent,
-                                splashColor: Colors.transparent,
-                                onTap: () async {
-                                  if (state.woodenFishProgress) {
-                                    return;
-                                  } else {
-                                    bloc.add(IncrementEvent(btTabBar: btBloc));
-                                  }
-                                },
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Stack(
-                                      children: [
-                                        Stack(
-                                            children:
-                                                state.knockAnimationWidgets),
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            state.wfSkin,
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                )),
+                          flex: 2,
+                          child: SingleChildScrollView(
+                            child: Material(
+                              color: Colors.transparent,
+                              child: InkWell(
+                                  highlightColor: Colors.transparent,
+                                  splashColor: Colors.transparent,
+                                  onTap: () async {
+                                    if (state.woodenFishProgress) {
+                                      return;
+                                    } else {
+                                      bloc.add(
+                                          IncrementEvent(btTabBar: btBloc));
+                                    }
+                                  },
+                                  child: Column(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      SizedBox(
+                                        height:
+                                            MediaQuery.of(context).size.height *
+                                                0.18,
+                                      ),
+                                      Stack(
+                                        children: [
+                                          Stack(
+                                              children:
+                                                  state.knockAnimationWidgets),
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              state.wfSkin,
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                      Stack(
+                                        children: [
+                                          !state.nativeAdIsLoaded
+                                              ? Align(
+                                                  alignment: Alignment.center,
+                                                  child: ConstrainedBox(
+                                                    constraints: BoxConstraints(
+                                                      minWidth: 120,
+                                                      minHeight: 120,
+                                                      maxHeight: 150,
+                                                      maxWidth:
+                                                          MediaQuery.of(context)
+                                                                  .size
+                                                                  .width -
+                                                              (2 * 16),
+                                                    ),
+                                                    child: Container(
+                                                        color: Colors.white,
+                                                        child: AdWidget(
+                                                            ad: state
+                                                                .bannerAd!)),
+                                                  ))
+                                              : const SizedBox(),
+                                        ],
+                                      )
+                                    ],
+                                  )),
+                            ),
                           ),
                         ),
                       ],

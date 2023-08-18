@@ -22,7 +22,7 @@ class SettingListTitle extends StatelessWidget {
     if (name == "顯示祈福文") {
       switchWidget = Switch.adaptive(
           activeColor: const Color(0xff37CACF),
-          value: state.setting.isDisplay,
+          value: state.setting.isDisplayPrayWord,
           onChanged: (isChange) {
             bloc.add(SwitchShowWordEvent(switchDisplay: isChange));
           });

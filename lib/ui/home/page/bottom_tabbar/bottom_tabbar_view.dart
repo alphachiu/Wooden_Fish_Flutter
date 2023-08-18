@@ -163,7 +163,7 @@ class _BottomTabBarPageState extends State<BottomTabBarPage> {
                                                       fontSize: 15,
                                                       color: Colors.white),
                                                   child: Text(
-                                                    '達到指定數字將停止敲擊',
+                                                    '達到指定數字將無法敲擊',
                                                   ),
                                                 )
                                               ])
@@ -179,6 +179,14 @@ class _BottomTabBarPageState extends State<BottomTabBarPage> {
                                                     fontSize: 30,
                                                     color: Colors.white),
                                                 child: Text(state.countDownStr),
+                                              ),
+                                              const DefaultTextStyle(
+                                                style: TextStyle(
+                                                    fontSize: 15,
+                                                    color: Colors.white),
+                                                child: Text(
+                                                  '時間結束後將無法敲擊',
+                                                ),
                                               )
                                             ],
                                           ),

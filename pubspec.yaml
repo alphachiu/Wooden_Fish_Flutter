@@ -49,7 +49,7 @@ dependencies:
   flutter_timezone: ^1.0.7
   another_stepper: ^1.2.2
   firebase_core: ^2.15.0
-
+  google_mobile_ads: ^3.0.0
 
 
 
