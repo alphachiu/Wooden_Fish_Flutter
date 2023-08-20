@@ -35,7 +35,7 @@ class SettingWidgetState {
       ..setting = LocalSetting()
       ..levelName = ""
       ..avatarPhoto =
-          const Image(image: AssetImage('assets/images/user_Icon.png'))
+          const Image(image: AssetImage('assets/images/user_Icon_01.png'))
       ..photoLoadingStatus = PhotoLoadStatus.init
       ..version = ''
       ..stepperData = []

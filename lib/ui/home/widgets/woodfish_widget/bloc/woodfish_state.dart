@@ -43,7 +43,7 @@ class WoodFishWidgetState {
       ..wfSkin = WoodenFishUtil.internal()
           .getSkinImageFromString('WoodenFishSkinElement.wood')
       ..prayPhoto = const Image(
-        image: AssetImage('assets/images/user_Icon.png'),
+        image: AssetImage('assets/images/user_Icon_01.png'),
         width: 200,
         height: 200,
       )
