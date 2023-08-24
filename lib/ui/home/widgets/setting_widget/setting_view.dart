@@ -60,40 +60,7 @@ class _SettingWidgetPageState extends State<SettingWidgetPage> {
     return BlocConsumer<SettingWidgetBloc, SettingWidgetState>(
         listener: (context, state) {
       state.isDisplayLevelList
-          ? showDialog(
-              barrierDismissible: false,
-              context: context,
-              builder: (BuildContext context) {
-                return AlertDialog(
-                  backgroundColor: Colors.transparent,
-                  //contentPadding: const EdgeInsets.all(30),
-                  content: Container(
-                    color: Colors.transparent,
-                    child: Stack(children: [
-                      LevelInfoView(
-                        state: state,
-                      ),
-                      Positioned(
-                        right: 0.0,
-                        top: 0.0,
-                        child: InkWell(
-                          splashColor: Colors.transparent,
-                          highlightColor: Colors.transparent,
-                          onTap: () {
-                            Navigator.of(context).pop();
-                            state.isDisplayLevelList = false;
-                          },
-                          child: const CircleAvatar(
-                            radius: 15,
-                            backgroundColor: Colors.red,
-                            child: Icon(Icons.close),
-                          ),
-                        ),
-                      ),
-                    ]),
-                  ),
-                );
-              })
+          ? showLevelLine(context, state)
           : const SizedBox();
     }, builder: (context, state) {
       return BlocBuilder<SettingWidgetBloc, SettingWidgetState>(
@@ -321,8 +288,42 @@ class _SettingWidgetPageState extends State<SettingWidgetPage> {
                                           onTap: () {
                                             print(
                                                 'name = ${settingModel.name}');
+                                            if (settingModel.name == '給予鼓勵') {
+                                              showSupport(context);
+                                            }
                                           },
                                         ),
+                                      ),
+                                    );
+                                  } else if (settingModel.position ==
+                                      SettingPosition.mid) {
+                                    return Padding(
+                                      padding: const EdgeInsets.only(
+                                          left: 15, right: 15, bottom: 0),
+                                      child: Column(
+                                        children: [
+                                          Container(
+                                            decoration: const BoxDecoration(
+                                              color: Colors.white,
+                                            ),
+                                            child: SettingListTitle(
+                                              name: settingModel.name,
+                                              state: state,
+                                              onTap: () {},
+                                            ),
+                                          ),
+                                          Container(
+                                            color: Colors.white,
+                                            child: const Padding(
+                                              padding:
+                                                  EdgeInsets.only(left: 20),
+                                              child: Divider(
+                                                color: Colors.black45,
+                                                height: 1,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                     );
                                   } else {

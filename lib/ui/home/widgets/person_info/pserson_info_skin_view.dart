@@ -27,6 +27,7 @@ class PersonInfoSkinView extends StatelessWidget {
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: GridView.builder(
+                    physics: const NeverScrollableScrollPhysics(),
                     shrinkWrap: true,
                     gridDelegate:
                         const SliverGridDelegateWithFixedCrossAxisCount(

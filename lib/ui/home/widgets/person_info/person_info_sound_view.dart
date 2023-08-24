@@ -27,6 +27,7 @@ class PersonInfoSoundView extends StatelessWidget {
                 padding: const EdgeInsets.only(
                     left: 10, right: 20, top: 10, bottom: 10),
                 child: GridView.builder(
+                    physics: const NeverScrollableScrollPhysics(),
                     shrinkWrap: true,
                     gridDelegate:
                         const SliverGridDelegateWithFixedCrossAxisCount(
@@ -78,7 +79,6 @@ class PersonInfoSoundView extends StatelessWidget {
                                           : const SizedBox()
                                     ],
                                   )),
-
                               Text('${index + 1}'),
                             ],
                           ));

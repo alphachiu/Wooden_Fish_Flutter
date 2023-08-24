@@ -10,6 +10,7 @@ class AdsRepository {
     try {
       return await _adsClient.getNativeAd();
     } catch (e, st) {
+      print('getNativeAd error');
       Error.throwWithStackTrace(e, st);
     }
   }

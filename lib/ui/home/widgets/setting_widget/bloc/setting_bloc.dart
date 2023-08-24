@@ -164,6 +164,8 @@ class SettingWidgetBloc extends Bloc<SettingWidgetEvent, SettingWidgetState> {
       state.stepperData.add(data);
     }
 
+    // state.nativeAd = await _adsRepository.getNativeAd();
+    print('_reviewLevelStepper');
     emit(state.clone());
   }
 }

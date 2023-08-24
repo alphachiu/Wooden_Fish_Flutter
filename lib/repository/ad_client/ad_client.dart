@@ -62,7 +62,7 @@ class AdsClient {
     for (final ad in Ads.values) {
       if (Platform.isIOS) {
         if (kDebugMode) {
-          print('ad ios debug');
+          print('ad ios release');
           ads[ad] = ad.iOSTest;
         } else {
           print('ad ios release');
@@ -134,6 +134,7 @@ class AdsClient {
   }) async {
     try {
       final adCompleter = Completer<Ad?>();
+
       await NativeAd(
         adUnitId: adUnitId,
         request: const AdRequest(),

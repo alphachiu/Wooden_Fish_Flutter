@@ -30,7 +30,9 @@ class SettingWidgetState {
         GroupListModel(
             name: '顯示祈福文', position: SettingPosition.head, group: '其他設置'),
         GroupListModel(
-            name: '震動', position: SettingPosition.end, group: '其他設置'),
+            name: '震動', position: SettingPosition.mid, group: '其他設置'),
+        GroupListModel(
+            name: '給予鼓勵', position: SettingPosition.end, group: '其他設置'),
       ]
       ..setting = LocalSetting()
       ..levelName = ""
@@ -41,6 +43,7 @@ class SettingWidgetState {
       ..stepperData = []
       ..currentStepperInt = 0
       ..isDisplayLevelList = false
+      ..nativeAd = null
       ..nativeAdIsLoaded = true;
   }
 

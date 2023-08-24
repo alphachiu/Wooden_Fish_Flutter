@@ -1,8 +1,11 @@
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:woodenfish_bloc/repository/ad_client/ad_client.dart';
 import 'package:woodenfish_bloc/repository/ads_repository.dart';
 import 'package:woodenfish_bloc/repository/api/local_storage_setting_api.dart';
 import 'package:woodenfish_bloc/repository/wooden_repository.dart';
@@ -30,6 +33,11 @@ Future<void> main() async {
   ///LocalNotification init
   await WoodenFishUtil.internal().locationNotificationInit();
   MobileAds.instance.initialize();
+
+  ///Crashlytics init
+  await FirebaseCrashlytics.instance
+      .setCrashlyticsCollectionEnabled(!kDebugMode);
+
   runApp(configuredApp);
 }
 
@@ -43,20 +51,29 @@ class MyApp extends StatelessWidget {
     print('appName = ${AppConfig.of(context).appTitle}');
 
     return MaterialApp(
-      title: AppConfig.of(context).appTitle,
-      theme: ThemeData(
-        appBarTheme: const AppBarTheme(
-            backgroundColor: Color(0Xff066eb2), foregroundColor: Colors.white),
-      ),
-      home: RepositoryProvider(
-        create: (context) => WoodenRepository(woodenApi: localSettingAPI),
-        child: MultiBlocProvider(providers: [
-          BlocProvider<WoodFishWidgetBloc>(
-              create: (BuildContext context) => WoodFishWidgetBloc(
-                  woodenRepository:
-                      RepositoryProvider.of<WoodenRepository>(context), adsRepository: RepositoryProvider.of<AdsRepository>(context))),
-        ], child: const BottomTabBarPage()),
-      ),
-    );
+        title: AppConfig.of(context).appTitle,
+        theme: ThemeData(
+          appBarTheme: const AppBarTheme(
+              backgroundColor: Color(0Xff066eb2),
+              foregroundColor: Colors.white),
+        ),
+        home: MultiRepositoryProvider(
+          providers: [
+            RepositoryProvider<WoodenRepository>(
+              create: (context) => WoodenRepository(woodenApi: localSettingAPI),
+            ),
+            RepositoryProvider<AdsRepository>(
+              create: (context) => AdsRepository(adsClient: AdsClient()),
+            ),
+          ],
+          child: MultiBlocProvider(providers: [
+            BlocProvider<WoodFishWidgetBloc>(
+                create: (BuildContext context) => WoodFishWidgetBloc(
+                    woodenRepository:
+                        RepositoryProvider.of<WoodenRepository>(context),
+                    adsRepository:
+                        RepositoryProvider.of<AdsRepository>(context))),
+          ], child: const BottomTabBarPage()),
+        ));
   }
 }

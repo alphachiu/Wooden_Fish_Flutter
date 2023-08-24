@@ -31,6 +31,7 @@ class PersonInfoBgView extends StatelessWidget {
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: GridView.builder(
+                    physics: const NeverScrollableScrollPhysics(),
                     shrinkWrap: true,
                     gridDelegate:
                         const SliverGridDelegateWithFixedCrossAxisCount(
@@ -49,7 +50,7 @@ class PersonInfoBgView extends StatelessWidget {
                           .getBgImageFromString(
                               colorName: gridsElement[index].name.toString(),
                               size: 50);
-                      //print('bgImage hight = ${bgImage?.width}');
+
                       if (bgImage != null) {
                         return GestureDetector(
                             onTap: () {
@@ -74,7 +75,7 @@ class PersonInfoBgView extends StatelessWidget {
                                     CircleAvatar(
                                       backgroundColor: Colors.black,
                                       radius: 60,
-                                      child: bgImage,
+                                      backgroundImage: bgImage.image,
                                     ),
                                     isSelectBg
                                         ? const Center(

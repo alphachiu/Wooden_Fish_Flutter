@@ -91,7 +91,7 @@ class WoodFishWidgetBloc
     //Show AD
     Duration duration = DateTime.now().difference(state.autoOpenTime);
     print('minutes ad = ${duration.inMinutes}');
-    if (duration.inMinutes >= state.limitTime &&
+    if (duration.inMinutes >= state.limitADMinute &&
         state.isAuto &&
         !state.isDisplayAd) {
       state.isDisplayAd = true;
@@ -106,11 +106,11 @@ class WoodFishWidgetBloc
 
         if (state.isGetRewardAd) {
           state.addRewardText = AddRewardText(
-              key: ValueKey("${autoKnockSetting.currentKnockCount}"),
+              key: ObjectKey('${autoKnockSetting.currentKnockCount}'),
               childWidget: Text(
-                '+ ${state.rewardPoint}',
+                '+ ${state.rewardPoint} 功德',
                 style: TextStyle(
-                    fontSize: 30.0,
+                    fontSize: 20.0,
                     foreground: Paint()
                       ..color = Colors.yellow
                       ..style = PaintingStyle.stroke
@@ -197,7 +197,7 @@ class WoodFishWidgetBloc
   void _changeWoodenFishStateEvent(ChangWoodenFishStateEvent event,
       Emitter<WoodFishWidgetState> emit) async {
     state.setting = _woodenRepository.getSetting();
-    state.bannerAd = await _adsRepository.getBannerAd();
+    // state.bannerAd = await _adsRepository.getBannerAd();
     emit(state.clone());
   }
 

@@ -24,7 +24,7 @@ class WoodFishWidgetState {
   late BannerAd? bannerAd;
   late bool nativeAdIsLoaded;
   late DateTime autoOpenTime;
-  late int limitTime;
+  late int limitADMinute;
   late bool isDisplayAd;
   late bool isGetRewardAd;
   late Widget? addRewardText;
@@ -51,9 +51,10 @@ class WoodFishWidgetState {
       ..photoLoadingStatus = PhotoLoadStatus.init
       ..woodenFishProgress = false
       ..nativeAdIsLoaded = true
+      ..bannerAd = null
       ..autoOpenTime = DateTime.now()
       ..isDisplayAd = false
-      ..limitTime = 1
+      ..limitADMinute = 5
       ..isGetRewardAd = false
       ..addRewardText = null
       ..rewardPoint = 100;
@@ -76,7 +77,7 @@ class WoodFishWidgetState {
       ..woodenFishProgress = woodenFishProgress
       ..bannerAd = bannerAd
       ..nativeAdIsLoaded = nativeAdIsLoaded
-      ..limitTime = limitTime
+      ..limitADMinute = limitADMinute
       ..isDisplayAd = isDisplayAd
       ..autoOpenTime = autoOpenTime
       ..isGetRewardAd = isGetRewardAd

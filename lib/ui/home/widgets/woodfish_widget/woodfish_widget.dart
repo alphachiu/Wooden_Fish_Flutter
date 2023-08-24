@@ -140,22 +140,28 @@ class _WoodFishWidgetPageState extends State<WoodFishWidgetPage>
                                           ),
                                           Row(
                                             children: [
-                                              Text(
-                                                '累積敲 ${state.totalCount} 次',
-                                                overflow: TextOverflow.clip,
-                                                style: TextStyle(
-                                                    fontWeight: FontWeight.bold,
-                                                    fontSize: 20.0,
-                                                    color: state.bgColor ==
-                                                            Colors.white
-                                                        ? Colors.black
-                                                        : Colors.white),
-                                              ),
-                                              SizedBox(
-                                                width: 10,
-                                              ),
-                                              state.addRewardText ??
-                                                  const SizedBox()
+                                              Stack(
+                                                clipBehavior: Clip.none,
+                                                children: [
+                                                  Text(
+                                                    '累積敲 ${state.totalCount} 次',
+                                                    overflow: TextOverflow.clip,
+                                                    style: TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        fontSize: 20.0,
+                                                        color: state.bgColor ==
+                                                                Colors.white
+                                                            ? Colors.black
+                                                            : Colors.white),
+                                                  ),
+                                                  Positioned(
+                                                      right: -100,
+                                                      child:
+                                                          state.addRewardText ??
+                                                              const SizedBox())
+                                                ],
+                                              )
                                             ],
                                           )
                                         ],
@@ -256,7 +262,8 @@ class _WoodFishWidgetPageState extends State<WoodFishWidgetPage>
                                                               (2 * 16),
                                                     ),
                                                     child: Container(
-                                                        color: Colors.white,
+                                                        color:
+                                                            Colors.transparent,
                                                         child: AdWidget(
                                                             ad: state
                                                                 .bannerAd!)),
