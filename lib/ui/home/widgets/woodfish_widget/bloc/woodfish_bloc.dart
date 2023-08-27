@@ -180,7 +180,7 @@ class WoodFishWidgetBloc
     state.woodenFishProgress = true;
     emit(state.clone());
     if (!state.isAuto) {
-      await Future.delayed(const Duration(milliseconds: 300));
+      //await Future.delayed(const Duration(milliseconds: 300));
     }
     state.woodenFishProgress = false;
 
