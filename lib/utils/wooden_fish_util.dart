@@ -137,10 +137,10 @@ class WoodenFishUtil {
   tz.TZDateTime _nextInstanceOfTenAM() {
     final tz.TZDateTime now = tz.TZDateTime.now(tz.local);
     tz.TZDateTime scheduledDate =
-        tz.TZDateTime(tz.local, now.year, now.month, now.day, 10);
-    if (scheduledDate.isBefore(now)) {
-      scheduledDate = scheduledDate.add(const Duration(days: 1));
-    }
+        tz.TZDateTime(tz.local, now.year, now.month, now.day, 11);
+    // if (scheduledDate.isBefore(now)) {
+    //   scheduledDate = scheduledDate.add(const Duration(days: 1));
+    // }
     return scheduledDate;
   }
 
@@ -345,6 +345,7 @@ class WoodenFishUtil {
 
   Image getSkinImageFromString(String skinName) {
     Image? image;
+    print('getSkinImageFromString');
 
     for (WoodenFishSkinElement element in WoodenFishSkinElement.values) {
       if (element.toString() == skinName) {

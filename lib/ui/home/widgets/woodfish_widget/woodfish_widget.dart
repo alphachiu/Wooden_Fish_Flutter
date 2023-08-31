@@ -232,8 +232,9 @@ class _WoodFishWidgetPageState extends State<WoodFishWidgetPage>
                                       Stack(
                                         children: [
                                           Stack(
-                                              children:
-                                                  state.knockAnimationWidgets),
+                                            children:
+                                                state.knockAnimationWidgets,
+                                          ),
                                           Row(
                                             mainAxisAlignment:
                                                 MainAxisAlignment.center,

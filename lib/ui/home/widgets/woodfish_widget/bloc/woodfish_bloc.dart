@@ -154,13 +154,14 @@ class WoodFishWidgetBloc
     //play sound
     var soundPathName = WoodenFishUtil.internal()
         .getSoundNameFromString(state.setting.woodenFishSound);
-    AudioPlayUtil().stop();
-    await AudioPlayUtil().play(soundPathName);
+
+    await AudioPlayUtil().stop().then((_) {
+      AudioPlayUtil().play(soundPathName);
+    });
 
     //check DisplayPrayWord
     if (state.setting.isDisplayPrayWord && !state.isDisplayAd) {
-      await _createKnockWidget(
-          autoKnockSetting, autoKnockSetting.currentKnockCount);
+      await _createKnockWidget(autoKnockSetting);
     }
 
     if ((state.autoKnockSetting.isAutoStop &&
@@ -244,8 +245,7 @@ class WoodFishWidgetBloc
     }
   }
 
-  Future<void> _createKnockWidget(
-      AutoKnockSetting autoKnockSetting, int keyCount) async {
+  Future<void> _createKnockWidget(AutoKnockSetting autoKnockSetting) async {
     var textColor = WoodenFishUtil.internal()
         .getKnockTextColorFromString(state.setting.woodenFishBg);
     var levelElement = WoodenFishUtil.internal()
@@ -255,8 +255,8 @@ class WoodFishWidgetBloc
     var isTopGodLevel = WoodenFishUtil.internal()
         .getLevelNameElementFromString(state.setting.level)
         .contains("佛");
-
-    var key = ObjectKey('$keyCount');
+    int timestamp = DateTime.now().millisecondsSinceEpoch;
+    var key = ObjectKey('$timestamp');
 
     KnockTextWidget knockWidget = KnockTextWidget(
         key: key,
@@ -313,7 +313,8 @@ class WoodFishWidgetBloc
 
   Future<void> _removeWidget(Key key) async {
     _knockAnimationWidgets.removeWhere((element) => element.key == key);
-    print('knockAnimationWidgets length = ${_knockAnimationWidgets.length}');
+    print(
+        'release knockAnimationWidgets length = ${_knockAnimationWidgets.length}');
     state.knockAnimationWidgets = _knockAnimationWidgets;
   }
 }
